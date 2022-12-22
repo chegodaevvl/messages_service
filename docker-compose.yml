@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  postgres_db:
+  db_server:
     image: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data/
@@ -28,7 +28,7 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      postgres_db:
+      db_server:
         condition: service_healthy
 
 volumes:
