@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from databases import Database
 
-from settings import DATABASE_URL
+from app.core.settings import DATABASE_URL
 
 
 async def db_connect(app: FastAPI) -> None:

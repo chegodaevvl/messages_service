@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from settings import PROJECT_NAME, PROJECT_VERSION
+from app.core.settings import PROJECT_NAME, PROJECT_VERSION
 from app.core.handlers import app_stop_app_handler, app_start_app_handler
 
 
