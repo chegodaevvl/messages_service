@@ -1,4 +1,4 @@
-import os
+from os import environ
 
 import pytest
 from asgi_lifespan import LifespanManager
@@ -11,9 +11,13 @@ from alembic import command
 from alembic.config import Config
 
 
+from app.models.users import UserInDB, UserBase
+from app.db.repositories.users import UserRepository
+
+
 @pytest.fixture(scope="session")
 def apply_migrations():
-    os.environ["DB_SUFFIX"] = "test"
+    environ["DB_SUFFIX"] = "test"
     config = Config("alembic.ini")
     command.upgrade(config, "head")
     yield
@@ -30,6 +34,17 @@ def app(apply_migrations) -> FastAPI:
 @pytest.fixture
 def db(app: FastAPI) -> Database:
     return app.state._db
+
+
+@pytest.fixture
+async def test_user(db: Database) -> UserInDB:
+
+    user_repo = UserRepository(db)
+    new_user = UserBase(
+        name="Test user", access_key="Test secret",
+    )
+
+    return await user_repo.create_user(new_user=new_user)
 
 
 @pytest.fixture

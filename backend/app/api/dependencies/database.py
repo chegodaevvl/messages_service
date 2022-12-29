@@ -1,8 +1,7 @@
 from typing import Callable, Type
 from databases import Database
 
-from fastapi import Depends
-from starlette.requests import Request
+from fastapi import Depends, Request
 
 from app.db.repositories.base import BaseRepository
 

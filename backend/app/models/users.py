@@ -4,11 +4,16 @@ from app.models.core import CoreModel, IDModelMixin
 
 class UserBase(CoreModel):
     name: str
-    access_key: Optional[str]
+
+
+class UserCreate(UserBase):
+    name: str
+    access_key: str
 
 
 class UserInDB(IDModelMixin, UserBase):
     name: str
+    access_key: Optional[str]
 
 
 class UserPublic(IDModelMixin, UserBase):

@@ -14,6 +14,12 @@ GET_USER_BY_SECRET = """
     WHERE access_key = :secret;
 """
 
+CREATE_USER = """
+    INSERT INTO users (name, access_key)
+    VALUES (:name, :access_key)
+    RETURNING id, name;
+"""
+
 
 class UserRepository(BaseRepository):
 
@@ -31,4 +37,10 @@ class UserRepository(BaseRepository):
         if not user:
             return user
 
+        return UserInDB(**user)
+
+    async def create_user(self, *, new_user) -> UserInDB:
+        query_value = new_user.dict()
+
+        user = await self.db.fetch_one(query=CREATE_USER, values=query_value)
         return UserInDB(**user)
