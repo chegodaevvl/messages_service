@@ -2,11 +2,11 @@ import os
 from fastapi import FastAPI
 from databases import Database
 
-from app.core.settings import DATABASE_URL
+from app.core.settings import settings
 
 
 async def db_connect(app: FastAPI) -> None:
-    db_url = f"""{DATABASE_URL}{os.environ.get("DB_SUFFIX", "")}"""
+    db_url = f"""{settings.DATABASE_URL}{os.environ.get("DB_SUFFIX", "")}"""
     database = Database(db_url, min_size=2, max_size=10)
 
     await database.connect()

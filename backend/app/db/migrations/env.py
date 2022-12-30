@@ -11,7 +11,7 @@ import logging
 # we're appending the app directory to our path here so that we can import config easily
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[3]))
 
-from app.core.settings import DATABASE_URL, POSTGRES_DB  # noqa
+from app.core.settings import settings  # noqa
 
 # Alembic Config object, which provides access to values within the .ini file
 config = alembic.context.config
@@ -30,13 +30,13 @@ def run_migrations_online() -> None:
     Run migrations in 'online' mode
     """
     db_suffix = os.environ.get("DB_SUFFIX", "")
-    db_url = f"{DATABASE_URL}{db_suffix}"
+    db_url = f"{settings.DATABASE_URL}{db_suffix}"
 
     if "test" in db_suffix:
-        default_engine = create_engine(str(DATABASE_URL), isolation_level="AUTOCOMMIT")
+        default_engine = create_engine(str(settings.DATABASE_URL), isolation_level="AUTOCOMMIT")
         with default_engine.connect() as default_conn:
-            default_conn.execute(f"DROP DATABASE IF EXISTS {POSTGRES_DB}{db_suffix}")
-            default_conn.execute(f"CREATE DATABASE {POSTGRES_DB}{db_suffix}")
+            default_conn.execute(f"DROP DATABASE IF EXISTS {settings.POSTGRES_DB}{db_suffix}")
+            default_conn.execute(f"CREATE DATABASE {settings.POSTGRES_DB}{db_suffix}")
 
     connectable = config.attributes.get("connection", None)
     config.set_main_option("sqlalchemy.url", str(db_url))
@@ -67,7 +67,7 @@ def run_migrations_offline() -> None:
     if "test" in db_suffix:
         raise DatabaseError("Running testing migrations offline currently not permitted.")
 
-    alembic.context.configure(url=str(DATABASE_URL))
+    alembic.context.configure(url=settings.DATABASE_URL)
 
     with alembic.context.begin_transaction():
         alembic.context.run_migrations()
@@ -79,4 +79,3 @@ if alembic.context.is_offline_mode():
 else:
     logger.info("Running migrations online")
     run_migrations_online()
-
