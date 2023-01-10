@@ -17,7 +17,7 @@ GET_USER_BY_SECRET = """
 CREATE_USER = """
     INSERT INTO users (name, access_key)
     VALUES (:name, :access_key)
-    RETURNING id, name;
+    RETURNING id, name, access_key;
 """
 
 

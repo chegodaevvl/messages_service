@@ -41,7 +41,7 @@ async def test_user(db: Database) -> UserInDB:
 
     user_repo = UserRepository(db)
     new_user = UserBase(
-        name="Test user", access_key="Test secret",
+        name="Test user", access_key="TestSecret",
     )
 
     return await user_repo.create_user(new_user=new_user)
