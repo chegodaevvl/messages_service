@@ -12,9 +12,10 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
     api_key = Column(String, nullable=True)
-    tweets = relationship("tweets")
-    followers = relationship("followers")
-    likes = relationship("likes")
+    tweets = relationship("Tweet")
+    followers = relationship("Follower", foreign_keys="Follower.follower_id")
+    following = relationship("Follower", foreign_keys="Follower.user_id")
+    likes = relationship("Like")
 
 
 class Media(Base):
@@ -36,8 +37,8 @@ class Tweet(Base):
     id = Column(Integer, primary_key=True, index=True)
     tweet_data = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"))
-    medias = relationship("medias")
-    likes = relationship("likes")
+    medias = relationship("Media")
+    likes = relationship("Like")
 
 
 class Like(Base):

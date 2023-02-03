@@ -10,10 +10,15 @@ class UserCRUD:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def get_by_secret(self, secret: str):
-        select_stm = select(User).where(User.api_key == secret)
+    async def get_by_apikey(self, api_key: str):
+        select_stm = select(User).where(User.api_key == api_key)
         result = await self.session.execute(select_stm)
-        return result.scalars().all()
+        return result.scalars().first()
+
+    async def get_by_id(self, id: int):
+        select_stm = select(User).where(User.id == id)
+        result = await self.session.execute(select_stm)
+        return result.scalars().first()
 
     async def bulk_add(self, users: list) -> None:
         add_stm = insert(User).values(users)

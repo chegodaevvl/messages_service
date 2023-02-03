@@ -54,8 +54,8 @@ async def users_data(db) -> List:
 
     user_crud = UserCRUD(db)
     users_list = [{"name": "Chosen One",
-                   "access_key": "Superior"},
+                   "api_key": "Superior"},
                   {"name": "Super Two",
-                   "access_key": "Super Secret"}]
+                   "api_key": "Super Secret"}]
     await user_crud.bulk_add(users_list)
     return users_list
