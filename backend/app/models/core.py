@@ -12,5 +12,3 @@ class IDModelMixin(BaseModel):
 
 class BaseResponse(BaseModel):
     result: bool
-    error_type: Optional[str]
-    error_message: Optional[str]

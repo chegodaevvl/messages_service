@@ -31,6 +31,7 @@ def run_migrations_online() -> None:
     """
     db_suffix = os.environ.get("DB_SUFFIX", "")
     db_url = f"{settings.DATABASE_URL}{db_suffix}"
+    db_url = db_url.replace("+asyncpg", "")
 
     if "test" in db_suffix:
         default_engine = create_engine(str(settings.DATABASE_URL), isolation_level="AUTOCOMMIT")

@@ -1,4 +1,4 @@
-from pydantic import BaseSettings, Field, SecretStr
+from pydantic import BaseSettings, Field
 
 
 class Settings(BaseSettings):
@@ -15,11 +15,10 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
-        # secrets_dir = "/secrets/"
 
     @property
     def DATABASE_URL(self) -> str:
-        return f"postgresql://{self.POSTGRES_USER}:" \
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:" \
                f"{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:" \
                f"{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 

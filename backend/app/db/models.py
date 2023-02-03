@@ -1,16 +1,17 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
-    access_key = Column(String, nullable=True)
+    api_key = Column(String, nullable=True)
     tweets = relationship("tweets")
     followers = relationship("followers")
     likes = relationship("likes")

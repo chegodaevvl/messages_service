@@ -1,58 +1,61 @@
 from os import environ
-
-import pytest
-from asgi_lifespan import LifespanManager
-
+from typing import List
+import pytest_asyncio
 from fastapi import FastAPI
 from httpx import AsyncClient
-from databases import Database
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from alembic import command
 from alembic.config import Config
 
+from app.db.database import async_engine
+from app.db.repositories.users import UserCRUD
 
-from app.models.users import UserInDB, UserBase
-from app.db.repositories.users import UserRepository
 
-
-@pytest.fixture(scope="session")
+@pytest_asyncio.fixture(scope="session")
 def apply_migrations():
-    environ["DB_SUFFIX"] = "test"
+    environ["DB_SUFFIX"] = "_test"
     config = Config("alembic.ini")
     command.upgrade(config, "head")
     yield
     command.downgrade(config, "base")
 
 
-@pytest.fixture
-def app(apply_migrations) -> FastAPI:
-    from app.api.main import start_app
-
-    return start_app()
-
-
-@pytest.fixture
-def db(app: FastAPI) -> Database:
-    return app.state._db
-
-
-@pytest.fixture
-async def test_user(db: Database) -> UserInDB:
-
-    user_repo = UserRepository(db)
-    new_user = UserBase(
-        name="Test user", access_key="TestSecret",
+@pytest_asyncio.fixture(scope="function")
+async def db() -> AsyncSession:
+    async_session = sessionmaker(
+        async_engine, class_=AsyncSession, expire_on_commit=False
     )
+    async with async_session() as session:
+        yield session
+    await async_engine.dispose()
 
-    return await user_repo.create_user(new_user=new_user)
+
+@pytest_asyncio.fixture(scope="function")
+async def async_app() -> FastAPI:
+
+    from app.main import create_app
+
+    return create_app()
 
 
-@pytest.fixture
-async def client(app: FastAPI) -> AsyncClient:
-    async with LifespanManager(app):
-        async with AsyncClient(
-            app=app,
-            base_url="http://testserver",
-            headers={"Content-Type": "application/json"}
-        ) as client:
-            yield client
+@pytest_asyncio.fixture(scope="function")
+async def client(async_app: FastAPI) -> AsyncClient:
+    async with AsyncClient(
+            app=async_app,
+            base_url="http://testserver"
+    ) as async_client:
+        yield async_client
+
+
+@pytest_asyncio.fixture(scope="function")
+async def users_data(db) -> List:
+
+    user_crud = UserCRUD(db)
+    users_list = [{"name": "Chosen One",
+                   "access_key": "Superior"},
+                  {"name": "Super Two",
+                   "access_key": "Super Secret"}]
+    await user_crud.bulk_add(users_list)
+    return users_list
