@@ -11,6 +11,8 @@ from alembic.config import Config
 
 from app.db.database import async_engine
 from app.db.repositories.users import UserCRUD
+from app.db.models import User
+from app.models.users import UserCreate, UserInDB
 
 
 @pytest_asyncio.fixture(scope="session")
@@ -50,12 +52,9 @@ async def client(async_app: FastAPI) -> AsyncClient:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def users_data(db) -> List:
+async def test_user(db) -> User:
 
     user_crud = UserCRUD(db)
-    users_list = [{"name": "Chosen One",
-                   "api_key": "Superior"},
-                  {"name": "Super Two",
-                   "api_key": "Super Secret"}]
-    await user_crud.bulk_add(users_list)
-    return users_list
+    test_user = UserCreate(name="Chosen One",
+                           api_key="Superior")
+    return await user_crud.add_user(test_user)

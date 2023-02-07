@@ -8,12 +8,14 @@ class UserBase(CoreModel):
 
 class UserCreate(UserBase):
     name: str
-    access_key: str
+    api_key: str
 
 
 class UserInDB(IDModelMixin, UserBase):
-    name: str
-    access_key: Optional[str]
+    api_key: Optional[str]
+
+    class Config:
+        orm_mode = True
 
 
 class UserPublic(IDModelMixin, UserBase):

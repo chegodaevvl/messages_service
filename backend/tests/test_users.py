@@ -13,8 +13,7 @@ class TestGetUser:
 
     async def test_users_wrong_apikey(self,
                                       client: AsyncClient,
-                                      users_data) -> None:
-
+                                      test_user) -> None:
         result = await client.get(f"api/users/me", headers={"X-Token": "Invalid token"})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
@@ -24,22 +23,26 @@ class TestGetUser:
 
     async def test_get_current_user(self,
                                     client: AsyncClient,
-                                    users_data) -> None:
-        result = await client.get(f"api/users/me", headers={"X-Token": "Superior"})
+                                    test_user) -> None:
+        result = await client.get(f"api/users/me", headers={"X-Token": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
-        assert response["user"]["name"] == "Chosen One"
+        assert response["user"]["name"] == test_user.name
 
     async def test_get_user_by_id(self,
                                   client: AsyncClient,
-                                  users_data) -> None:
-        result = await client.get(f"api/users/2", headers={"X-Token": "Superior"})
+                                  test_user) -> None:
+        result = await client.get(f"api/users/{test_user.id}", headers={"X-Token": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
-        assert response["user"]["name"] == "Super Two"
-        result = await client.get(f"api/users/20000", headers={"X-Token": "Superior"})
+        assert response["user"]["name"] == test_user.name
+
+    async def test_get_user_by_wrong_id(self,
+                                        client: AsyncClient,
+                                        test_user):
+        result = await client.get(f"api/users/{test_user.id + 1000}", headers={"X-Token": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
