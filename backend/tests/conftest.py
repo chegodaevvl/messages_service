@@ -58,3 +58,12 @@ async def test_user(db) -> User:
     test_user = UserCreate(name="Chosen One",
                            api_key="Superior")
     return await user_crud.add_user(test_user)
+
+
+@pytest_asyncio.fixture(scope="function")
+async def second_user(db) -> User:
+
+    user_crud = UserCRUD(db)
+    second_user = UserCreate(name="Super Second",
+                             api_key="JustASecret")
+    return await user_crud.add_user(second_user)
