@@ -48,3 +48,13 @@ class TestGetUser:
         assert response["result"] is False
         assert response["error_type"] == "Not Found"
         assert response["error_message"] == "No user found with such id!"
+
+    async def test_follow_by_himself(self,
+                                     client: AsyncClient,
+                                     test_user):
+        result = await client.post(f"api/users/{test_user.id}/follow", headers={"X-Token": test_user.api_key})
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert response["result"] is False
+        assert response["error_type"] == "Bad Request"
+        assert response["error_message"] == "You couldn't follow yourself!"
