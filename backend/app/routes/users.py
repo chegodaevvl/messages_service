@@ -14,7 +14,10 @@ router = APIRouter()
 user_crud = Depends(get_user_crud)
 
 
-@router.get("/me", response_model=UserResponse, name="users:get-current-user", status_code=status.HTTP_200_OK)
+@router.get("/me", response_model=UserResponse,
+            response_model_exclude_unset=True,
+            name="users:get-current-user",
+            status_code=status.HTTP_200_OK)
 async def get_current_user(
         x_token: str = Header(default=None),
         user_crud: UserCRUD = user_crud,
@@ -28,7 +31,10 @@ async def get_current_user(
     }
 
 
-@router.get("/{id}", response_model=UserResponse, name="users:get-user-by-id", status_code=status.HTTP_200_OK)
+@router.get("/{id}", response_model=UserResponse,
+            response_model_exclude_unset=True,
+            name="users:get-user-by-id",
+            status_code=status.HTTP_200_OK)
 async def get_user_by_id(
         id: int,
         x_token: str = Header(default=None),
