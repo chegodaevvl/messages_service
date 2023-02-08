@@ -67,3 +67,12 @@ class TestGetUser:
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
+
+    async def test_unfollow_user(self,
+                                 client: AsyncClient,
+                                 test_user,
+                                 second_user):
+        result = await client.delete(f"api/users/{second_user.id}/follow", headers={"X-Token": test_user.api_key})
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert response["result"] is True
