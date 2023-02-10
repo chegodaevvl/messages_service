@@ -29,12 +29,16 @@ class UserCRUD:
             return user
         return UserInDB.from_orm(user)
 
-    async def bulk_add(self, users: list) -> None:
-        add_stm = insert(User).values(users)
-        await self.session.execute(add_stm)
-        await self.session.commit()
+    async def get_by_name(self, user_name: str) -> User:
+        select_stm = select(User).where(User.name == user_name)
+        result = await self.session.execute(select_stm)
+        user = result.scalars().first()
+        return user
 
     async def add_user(self, user: UserCreate) -> User:
+        new_user = await self.get_by_name(user.name)
+        if new_user:
+            return new_user
         new_user = User(**user.dict())
         self.session.add(new_user)
         await self.session.commit()
