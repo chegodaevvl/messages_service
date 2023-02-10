@@ -20,3 +20,8 @@ class UserInDB(IDModelMixin, UserBase):
 
 class UserPublic(IDModelMixin, UserBase):
     pass
+
+
+class FollowerInfo(CoreModel):
+    user_id: int
+    follower_id: int

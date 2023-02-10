@@ -2,10 +2,10 @@ from typing import Dict
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import insert
+from sqlalchemy import insert, delete
 
-from app.db.models import User
-from app.models.users import UserInDB, UserCreate
+from app.db.models import User, Follower
+from app.models.users import UserInDB, UserCreate, FollowerInfo
 
 
 class UserCRUD:
@@ -39,3 +39,19 @@ class UserCRUD:
         self.session.add(new_user)
         await self.session.commit()
         return new_user
+
+    async def add_follower(self, follower: FollowerInfo) -> bool:
+        new_follower = Follower(**follower.dict())
+        self.session.add(new_follower)
+        await self.session.commit()
+        return True
+
+    async def remove_follower(self, follower: FollowerInfo) -> bool:
+        follower = Follower(**follower.dict())
+        delete_stm = delete(Follower).where(
+            user_id=follower.user_id,
+            follower_id=follower.follower_id
+        )
+        await self.session.execute(delete_stm)
+        await self.session.commit()
+        return True
