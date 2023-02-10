@@ -35,7 +35,7 @@ async def db() -> AsyncSession:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def async_app() -> FastAPI:
+async def async_app(apply_migrations) -> FastAPI:
 
     from app.main import create_app
 

@@ -1,11 +1,15 @@
 from os import environ
+from sys import modules
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.core.settings import settings
 
-db_url = f"""{settings.DATABASE_URL}{environ.get("DB_SUFFIX", "")}"""
+if "pytest" in modules:
+    db_url = f"""{settings.DATABASE_URL}_test"""
+else:
+    db_url = settings.DATABASE_URL
 
 
 async_engine = create_async_engine(db_url, echo=True, future=True)
