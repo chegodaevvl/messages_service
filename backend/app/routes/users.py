@@ -72,3 +72,30 @@ async def follow_user(
     return {
         "result": True,
     }
+
+@router.delete("/{id}/follow",
+               response_model=UserResponse,
+               response_model_exclude_unset=True,
+               name="users:user_follow",
+               status_code=status.HTTP_200_OK)
+async def unfollow_user(
+    id: int,
+    x_token: str = Header(default=None),
+    user_crud: UserCRUD = user_crud,
+) -> UserResponse:
+    following_user = await user_crud.get_by_apikey(x_token)
+    followed_user = await user_crud.get_by_id(id)
+    if not followed_user:
+        return await create_error_response(101)
+    if following_user == followed_user:
+        return await create_error_response(102)
+    follower = FollowerInfo(
+        user_id=followed_user.id,
+        follower_id=following_user.id
+    )
+    result = await user_crud.remove_follower(follower)
+    if not result:
+        return await create_error_response(103)
+    return {
+        "result": True,
+    }

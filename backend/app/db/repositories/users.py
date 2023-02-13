@@ -66,8 +66,9 @@ class UserCRUD:
     async def remove_follower(self, follower: FollowerInfo) -> bool:
         follower = Follower(**follower.dict())
         delete_stm = delete(Follower).where(
-            user_id=follower.user_id,
-            follower_id=follower.follower_id
+            Follower.user_id == follower.user_id
+        ).where(
+            Follower.follower_id == follower.follower_id
         )
         await self.session.execute(delete_stm)
         await self.session.commit()
