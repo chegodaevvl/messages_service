@@ -44,8 +44,21 @@ class UserCRUD:
         await self.session.commit()
         return new_user
 
+    async def check_link(self, follow_link: Follower):
+        select_stm = select(Follower).where(
+            Follower.user_id == follow_link.user_id
+        ).where(
+            Follower.follower_id == follow_link.follower_id
+        )
+        result = await self.session.execute(select_stm)
+        if not result.scalars().first():
+            return False
+        return True
+
     async def add_follower(self, follower: FollowerInfo) -> bool:
         new_follower = Follower(**follower.dict())
+        if await self.check_link(new_follower):
+            return False
         self.session.add(new_follower)
         await self.session.commit()
         return True
