@@ -23,9 +23,19 @@ async def get_current_user(
         user_crud: UserCRUD = user_crud,
 ) -> UserResponse:
     user = await user_crud.get_by_apikey(x_token)
+    user_detail = {
+        "id": user.id,
+        "name": user.name
+    }
+    followers = await user_crud.get_followers(user.id)
+    followings = await user_crud.get_followings(user.id)
+    if followers:
+        user_detail["followers"] = followers
+    if followings:
+        user_detail["followings"] = followings
     return {
         "result": True,
-        "user": user
+        "user": user_detail
     }
 
 
@@ -40,9 +50,19 @@ async def get_user_by_id(
     user = await user_crud.get_by_id(id)
     if not user:
         return await create_error_response(101)
+    user_detail = {
+        "id": user.id,
+        "name": user.name
+    }
+    followers = await user_crud.get_followers(user.id)
+    followings = await user_crud.get_followings(user.id)
+    if followers:
+        user_detail["followers"] = followers
+    if followings:
+        user_detail["followings"] = followings
     return {
         "result": True,
-        "user": user
+        "user": user_detail
     }
 
 
@@ -72,6 +92,7 @@ async def follow_user(
     return {
         "result": True,
     }
+
 
 @router.delete("/{id}/follow",
                response_model=UserResponse,

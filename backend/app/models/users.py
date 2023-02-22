@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from app.models.core import CoreModel, IDModelMixin
 
 
@@ -18,8 +18,16 @@ class UserInDB(IDModelMixin, UserBase):
         orm_mode = True
 
 
-class UserPublic(IDModelMixin, UserBase):
+class UserDetail(IDModelMixin, UserBase):
     pass
+
+    class Config:
+        orm_mode = True
+
+
+class UserPublic(UserDetail):
+    followers: Optional[List[UserDetail]]
+    following: Optional[List[UserDetail]]
 
 
 class FollowerInfo(CoreModel):

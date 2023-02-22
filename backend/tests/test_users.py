@@ -67,6 +67,23 @@ class TestGetUser:
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
+        # result = await client.get(f"api/users/{second_user.id}", headers={"X-Token": test_user.api_key})
+        # assert result.status_code == status.HTTP_200_OK
+        # response = result.json()
+        # assert response["result"] is True
+        # assert "followers" in response["user"]
+        # assert len(response["user"]["followers"]) == 1
+        # assert response["user"]["followers"][0]["id"] == test_user.id
+        # assert response["user"]["followers"][0]["name"] == test_user.name
+        result = await client.get(f"api/users/{test_user.id}", headers={"X-Token": test_user.api_key})
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert response["result"] is True
+        print(response)
+        assert "followings" in response["user"]
+        assert len(response["user"]["followings"]) == 1
+        assert response["user"]["followings"][0]["id"] == second_user.id
+        assert response["user"]["followings"][0]["name"] == second_user.name
 
     async def test_follow_user_not_exist(self,
                                          client: AsyncClient,

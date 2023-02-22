@@ -1,11 +1,12 @@
-from typing import Dict
+from typing import List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import insert, delete
 
 from app.db.models import User, Follower
-from app.models.users import UserInDB, UserCreate, FollowerInfo
+from app.models.users import UserInDB, UserCreate, FollowerInfo, UserDetail
+from sqlalchemy.orm import selectinload
 
 
 class UserCRUD:
@@ -23,11 +24,33 @@ class UserCRUD:
 
     async def get_by_id(self, id: int) -> UserInDB:
         select_stm = select(User).where(User.id == id)
-        result = await self.session.execute(select_stm)
-        user = result.scalars().first()
+        query_result = await self.session.execute(select_stm)
+        user = query_result.scalars().first()
         if not user:
             return user
         return UserInDB.from_orm(user)
+
+    async def get_followers(self, user_id: int) -> List[UserDetail]:
+        select_stm = select(Follower).options(selectinload(Follower.follower)).where(Follower.following_id == user_id)
+        query_result = await self.session.execute(select_stm)
+        followers = query_result.scalars().all()
+        result = list()
+        for follower in followers:
+            print(follower.follower_id)
+            print(follower.following_id)
+            result.append(UserDetail.from_orm(follower.follower))
+        return result
+
+    async def get_followings(self, user_id: int) -> List[UserDetail]:
+        select_stm = select(Follower).options(selectinload(Follower.following)).where(Follower.follower_id == user_id)
+        query_result = await self.session.execute(select_stm)
+        followers = query_result.scalars().all()
+        result = list()
+        for follower in followers:
+            print(follower.following)
+            result.append(UserDetail.from_orm(follower.following))
+        print(*result)
+        return result
 
     async def get_by_name(self, user_name: str) -> User:
         select_stm = select(User).where(User.name == user_name)
