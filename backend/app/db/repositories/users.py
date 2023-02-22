@@ -46,7 +46,7 @@ class UserCRUD:
 
     async def check_link(self, follow_link: Follower):
         select_stm = select(Follower).where(
-            Follower.user_id == follow_link.user_id
+            Follower.following_id == follow_link.following_id
         ).where(
             Follower.follower_id == follow_link.follower_id
         )
@@ -66,7 +66,7 @@ class UserCRUD:
     async def remove_follower(self, follower: FollowerInfo) -> bool:
         follower = Follower(**follower.dict())
         delete_stm = delete(Follower).where(
-            Follower.user_id == follower.user_id
+            Follower.following_id == follower.following_id
         ).where(
             Follower.follower_id == follower.follower_id
         )

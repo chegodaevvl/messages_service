@@ -23,5 +23,5 @@ class UserPublic(IDModelMixin, UserBase):
 
 
 class FollowerInfo(CoreModel):
-    user_id: int
+    following_id: int
     follower_id: int
