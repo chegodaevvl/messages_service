@@ -32,7 +32,7 @@ async def get_current_user(
     if followers:
         user_detail["followers"] = followers
     if followings:
-        user_detail["followings"] = followings
+        user_detail["following"] = followings
     return {
         "result": True,
         "user": user_detail
@@ -59,7 +59,7 @@ async def get_user_by_id(
     if followers:
         user_detail["followers"] = followers
     if followings:
-        user_detail["followings"] = followings
+        user_detail["following"] = followings
     return {
         "result": True,
         "user": user_detail
