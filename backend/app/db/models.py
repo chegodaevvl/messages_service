@@ -1,19 +1,21 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
-    access_key = Column(String, nullable=True)
-    tweets = relationship("tweets")
-    followers = relationship("followers")
-    likes = relationship("likes")
+    api_key = Column(String, nullable=True)
+    tweets = relationship("Tweet")
+    followers = relationship("Follower", foreign_keys="Follower.follower_id")
+    following = relationship("Follower", foreign_keys="Follower.user_id")
+    likes = relationship("Like")
 
 
 class Media(Base):
@@ -35,8 +37,8 @@ class Tweet(Base):
     id = Column(Integer, primary_key=True, index=True)
     tweet_data = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"))
-    medias = relationship("medias")
-    likes = relationship("likes")
+    medias = relationship("Media")
+    likes = relationship("Like")
 
 
 class Like(Base):

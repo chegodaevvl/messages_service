@@ -1,24 +1,26 @@
-from databases import DatabaseURL
-from starlette.config import Config
-from starlette.datastructures import Secret
+from pydantic import BaseSettings, Field
 
 
-settings = Config(".env")
+class Settings(BaseSettings):
+    PROJECT_NAME: str = "TweetCo"
+    PROJECT_VERSION: str = "0.0.1"
+    API_PREFIX: str = "/api"
+    SECRET_KEY: str = Field(default="Changeme")
+    POSTGRES_USER: str
+    POSTGRES_PASSWORD: str
+    POSTGRES_SERVER: str
+    POSTGRES_PORT: str = Field(default='5432')
+    POSTGRES_DB: str
 
-PROJECT_NAME = "TweetCo"
-PROJECT_VERSION = "0.0.1"
-API_PREFIX = "/api"
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
 
-SECRET_KEY = settings("SECRET_KEY", cast=Secret, default="CHANGEME")
+    @property
+    def DATABASE_URL(self) -> str:
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:" \
+               f"{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:" \
+               f"{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
-POSTGRES_USER = settings("POSTGRES_USER", cast=str)
-POSTGRES_PASSWORD = settings("POSTGRES_PASSWORD", cast=Secret)
-POSTGRES_SERVER = settings("POSTGRES_SERVER", cast=str, default="db_server")
-POSTGRES_PORT = settings("POSTGRES_PORT", cast=str, default="5432")
-POSTGRES_DB = settings("POSTGRES_DB", cast=str)
 
-DATABASE_URL = settings(
-    "DATABASE_URL",
-    cast=DatabaseURL,
-    default=f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}"
-)
+settings = Settings()
