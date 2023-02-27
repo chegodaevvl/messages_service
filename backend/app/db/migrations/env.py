@@ -2,7 +2,7 @@ import pathlib
 import os
 import sys
 import alembic
-from sqlalchemy import engine_from_config, pool, create_engine
+from sqlalchemy import engine_from_config, pool, create_engine, text
 from psycopg2 import DatabaseError
 
 from logging.config import fileConfig
@@ -32,13 +32,6 @@ def run_migrations_online() -> None:
     db_suffix = os.environ.get("DB_SUFFIX", "")
     db_url = f"{settings.DATABASE_URL}{db_suffix}"
     db_url = db_url.replace("+asyncpg", "")
-
-    if "test" in db_suffix:
-        default_engine = create_engine(str(settings.DATABASE_URL), isolation_level="AUTOCOMMIT")
-        with default_engine.connect() as default_conn:
-            default_conn.execute(f"DROP DATABASE IF EXISTS {settings.POSTGRES_DB}{db_suffix}")
-            default_conn.execute(f"CREATE DATABASE {settings.POSTGRES_DB}{db_suffix}")
-
     connectable = config.attributes.get("connection", None)
     config.set_main_option("sqlalchemy.url", str(db_url))
 

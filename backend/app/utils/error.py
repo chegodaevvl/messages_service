@@ -1,10 +1,14 @@
 from app.models.error import ErrorResponse
 
 
-errors = {403: {"error_type": "Permission denied",
-                "error_message": "You're not authorized!"},
-          404: {"error_type": "Not Found",
-                "error_message": "No user found with such id!"}}
+errors = {
+    101: {"error_type": "Not Found",
+          "error_message": "No user found with such id!"},
+    102: {"error_type": "Bad Request",
+          "error_message": "It is unable to perform such operation on your own account!"},
+    103: {"error_type": "Bad Request",
+          "error_message": "You already follow this user!"},
+}
 
 
 async def create_error_response(error_code: int) -> ErrorResponse:
