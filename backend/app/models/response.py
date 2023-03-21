@@ -10,6 +10,6 @@ class UserResponse(BaseResponse):
 
 
 class TweetResponse(BaseResponse):
-    tweet_id: int
+    tweet_id: Optional[int]
     error_type: Optional[str]
     error_message: Optional[str]

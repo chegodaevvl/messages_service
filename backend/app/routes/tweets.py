@@ -31,8 +31,24 @@ async def create_tweet(
         "user_id": user.id
     }
     tweet_created = await tweet_crud.add_tweet(new_tweet)
-    print(tweet_created)
     return {
         "result": True,
         "tweet_id": tweet_created.id,
+    }
+
+
+@router.delete("/{id}", response_model=TweetResponse,
+               response_model_exclude_unset=True,
+               name="tweets:create-tweet",
+               status_code=status.HTTP_200_OK)
+async def delete_tweet(
+        id: int,
+        x_token: str = Header(default=None),
+        user_crud: UserCRUD = user_crud,
+        tweet_crud: TweetCRUD = tweet_crud,
+) -> TweetResponse:
+    user = await user_crud.get_by_apikey(x_token)
+    result = await tweet_crud.delete_tweet(id)
+    return {
+        "result": result
     }

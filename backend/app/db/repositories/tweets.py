@@ -19,3 +19,11 @@ class TweetCRUD:
         self.session.add(new_tweet)
         await self.session.commit()
         return TweetInDB.from_orm(new_tweet)
+
+    async def delete_tweet(self, tweet_id: int) -> bool:
+        delete_stm = delete(Tweet).where(
+            Tweet.id == tweet_id
+        )
+        await self.session.execute(delete_stm)
+        await self.session.commit()
+        return True
