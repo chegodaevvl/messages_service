@@ -51,6 +51,8 @@ async def delete_tweet(
     user = await user_crud.get_by_apikey(x_token)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)
+    if not await tweet_crud.check_ownership(id, user.id):
+        return await create_error_response(105)
     result = await tweet_crud.delete_tweet(id)
     return {
         "result": result

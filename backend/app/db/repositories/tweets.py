@@ -35,3 +35,15 @@ class TweetCRUD:
         if not tweet:
             return False
         return True
+
+    async def check_ownership(self, tweet_id, user_id: int) -> bool:
+        select_stm = select(Tweet).where(
+            Tweet.id == tweet_id
+        ).where(
+            Tweet.user_id == user_id
+        )
+        query_result = await self.session.execute(select_stm)
+        tweet = query_result.scalars().first()
+        if not tweet:
+            return False
+        return True
