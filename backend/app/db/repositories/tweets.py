@@ -27,3 +27,11 @@ class TweetCRUD:
         await self.session.execute(delete_stm)
         await self.session.commit()
         return True
+
+    async def check_by_id(self, tweet_id: int) -> bool:
+        select_stm = select(Tweet).where(Tweet.id == tweet_id)
+        query_result = await self.session.execute(select_stm)
+        tweet = query_result.scalars().first()
+        if not tweet:
+            return False
+        return True

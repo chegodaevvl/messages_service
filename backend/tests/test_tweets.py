@@ -30,5 +30,15 @@ class TestTweet:
         result = await client.delete(f"api/tweets/{test_tweet.id}", headers={"X-Token": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        print(response)
         assert response["result"] is True
+
+    async def test_remove_wrong_tweet(self,
+                                      client: AsyncClient,
+                                      test_user,
+                                      test_tweet) -> None:
+        result = await client.delete(f"api/tweets/{test_tweet.id + 100}", headers={"X-Token": test_user.api_key})
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert response["result"] is False
+        assert response["error_type"] == "Not Found"
+        assert response["error_message"] == "No tweet found with such id!"

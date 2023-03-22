@@ -5,6 +5,7 @@ from app.db.repositories.users import UserCRUD
 from app.db.repositories.tweets import TweetCRUD
 from app.db.dependencies import get_user_crud, get_tweet_crud
 from app.models.response import TweetResponse
+from app.utils.error import create_error_response
 
 
 router = APIRouter()
@@ -48,6 +49,8 @@ async def delete_tweet(
         tweet_crud: TweetCRUD = tweet_crud,
 ) -> TweetResponse:
     user = await user_crud.get_by_apikey(x_token)
+    if not await tweet_crud.check_by_id(id):
+        return await create_error_response(104)
     result = await tweet_crud.delete_tweet(id)
     return {
         "result": result
