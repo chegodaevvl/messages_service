@@ -1,3 +1,4 @@
+# from typing import Annotated
 from fastapi import APIRouter, Depends, Header, Request
 from fastapi import status
 
@@ -21,11 +22,11 @@ tweet_crud = Depends(get_tweet_crud)
              status_code=status.HTTP_200_OK)
 async def create_tweet(
         request: Request,
-        x_token: str = Header(default=None),
+        api_key: str = Header(default=None),
         user_crud: UserCRUD = user_crud,
         tweet_crud: TweetCRUD = tweet_crud,
 ) -> TweetResponse:
-    user = await user_crud.get_by_apikey(x_token)
+    user = await user_crud.get_by_apikey(api_key)
     tweet_data = await request.json()
     new_tweet = {
         "tweet_data": tweet_data["tweet_data"],
@@ -44,11 +45,11 @@ async def create_tweet(
                status_code=status.HTTP_200_OK)
 async def delete_tweet(
         id: int,
-        x_token: str = Header(default=None),
+        api_key: str = Header(default=None),
         user_crud: UserCRUD = user_crud,
         tweet_crud: TweetCRUD = tweet_crud,
 ) -> TweetResponse:
-    user = await user_crud.get_by_apikey(x_token)
+    user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)
     if not await tweet_crud.check_ownership(id, user.id):
@@ -65,11 +66,11 @@ async def delete_tweet(
              status_code=status.HTTP_200_OK)
 async def like_tweet(
         id: int,
-        x_token: str = Header(default=None),
+        api_key: str = Header(default=None),
         user_crud: UserCRUD = user_crud,
         tweet_crud: TweetCRUD = tweet_crud,
 ) -> TweetResponse:
-    user = await user_crud.get_by_apikey(x_token)
+    user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)
     if await tweet_crud.check_ownership(id, user.id):
@@ -90,11 +91,11 @@ async def like_tweet(
                status_code=status.HTTP_200_OK)
 async def unlike_tweet(
         id: int,
-        x_token: str = Header(default=None),
+        api_key: str = Header(default=None),
         user_crud: UserCRUD = user_crud,
         tweet_crud: TweetCRUD = tweet_crud,
 ) -> TweetResponse:
-    user = await user_crud.get_by_apikey(x_token)
+    user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)
     if await tweet_crud.check_ownership(id, user.id):

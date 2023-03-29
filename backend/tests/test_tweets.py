@@ -17,7 +17,7 @@ class TestTweet:
         test_tweet = {
             "tweet_data": "Test tweet message"
         }
-        result = await client.post("api/tweets", headers={"X-Token": test_user.api_key}, json=test_tweet)
+        result = await client.post("api/tweets", headers={"api-key": test_user.api_key}, json=test_tweet)
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
@@ -27,7 +27,7 @@ class TestTweet:
                                 client: AsyncClient,
                                 test_user,
                                 test_tweet) -> None:
-        result = await client.delete(f"api/tweets/{test_tweet.id}", headers={"X-Token": test_user.api_key})
+        result = await client.delete(f"api/tweets/{test_tweet.id}", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
@@ -36,7 +36,7 @@ class TestTweet:
                                       client: AsyncClient,
                                       test_user,
                                       test_tweet) -> None:
-        result = await client.delete(f"api/tweets/{test_tweet.id + 100}", headers={"X-Token": test_user.api_key})
+        result = await client.delete(f"api/tweets/{test_tweet.id + 100}", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
@@ -47,7 +47,7 @@ class TestTweet:
                                          client: AsyncClient,
                                          second_user,
                                          test_tweet) -> None:
-        result = await client.delete(f"api/tweets/{test_tweet.id}", headers={"X-Token": second_user.api_key})
+        result = await client.delete(f"api/tweets/{test_tweet.id}", headers={"api-key": second_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
@@ -59,11 +59,11 @@ class TestTweet:
                               test_tweet,
                               test_user,
                               second_user):
-        result = await client.post(f"api/tweets/{test_tweet.id}/likes", headers={"X-Token": second_user.api_key})
+        result = await client.post(f"api/tweets/{test_tweet.id}/likes", headers={"api-key": second_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
-        result = await client.post(f"api/tweets/{test_tweet.id}/likes", headers={"X-Token": test_user.api_key})
+        result = await client.post(f"api/tweets/{test_tweet.id}/likes", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
@@ -72,7 +72,7 @@ class TestTweet:
                                         client: AsyncClient,
                                         test_tweet,
                                         second_user):
-        result = await client.post(f"api/tweets/{test_tweet.id + 100}/likes", headers={"X-Token": second_user.api_key})
+        result = await client.post(f"api/tweets/{test_tweet.id + 100}/likes", headers={"api-key": second_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
@@ -84,16 +84,16 @@ class TestTweet:
                                 test_tweet,
                                 test_user,
                                 second_user):
-        await client.post(f"api/tweets/{test_tweet.id}/likes", headers={"X-Token": second_user.api_key})
-        result = await client.delete(f"api/tweets/{test_tweet.id}/likes", headers={"X-Token": second_user.api_key})
+        await client.post(f"api/tweets/{test_tweet.id}/likes", headers={"api-key": second_user.api_key})
+        result = await client.delete(f"api/tweets/{test_tweet.id}/likes", headers={"api-key": second_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
-        result = await client.delete(f"api/tweets/{test_tweet.id}/likes", headers={"X-Token": second_user.api_key})
+        result = await client.delete(f"api/tweets/{test_tweet.id}/likes", headers={"api-key": second_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
-        result = await client.delete(f"api/tweets/{test_tweet.id}/likes", headers={"X-Token": test_user.api_key})
+        result = await client.delete(f"api/tweets/{test_tweet.id}/likes", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False

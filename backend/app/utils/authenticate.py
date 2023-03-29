@@ -7,8 +7,7 @@ from app.db.dependencies import get_user_crud
 user_crud = Depends(get_user_crud)
 
 
-async def is_authenticate(x_token: str = Header(default=None),
+async def is_authenticate(api_key: str = Header(default=None),
                           user_crud: UserCRUD = user_crud):
-    # if x_token != "Superior":
-    if not await user_crud.get_by_apikey(x_token):
+    if not await user_crud.get_by_apikey(api_key):
         raise HTTPException(status_code=403, detail="Not authorized!")
