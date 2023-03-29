@@ -14,6 +14,8 @@ errors = {
           "error_message": "You are unable to delete tweet, created by another user!"},
     106: {"error_type": "Bad Request",
           "error_message": "You are unable to like/unlike your own tweet!"},
+    107: {"error_type": "Bad Request",
+          "error_message": "You are unable to unlike tweet, you don't like!"},
 }
 
 

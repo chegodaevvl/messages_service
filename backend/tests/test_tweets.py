@@ -84,6 +84,7 @@ class TestTweet:
                                 test_tweet,
                                 test_user,
                                 second_user):
+        await client.post(f"api/tweets/{test_tweet.id}/likes", headers={"X-Token": second_user.api_key})
         result = await client.delete(f"api/tweets/{test_tweet.id}/likes", headers={"X-Token": second_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()

@@ -53,3 +53,25 @@ class TweetCRUD:
         self.session.add(tweet_like)
         await self.session.commit()
         return True
+
+    async def unlike_tweet(self, tweet_like: TweetLike) -> bool:
+        delete_stm = delete(Like).where(
+            Like.tweet_id == tweet_like["tweet_id"]
+        ).where(
+            Like.user_id == tweet_like["user_id"]
+        )
+        await self.session.execute(delete_stm)
+        await self.session.commit()
+        return True
+
+    async def check_tweet_like(self, tweet_id, user_id: int) -> bool:
+        select_stm = select(Like).where(
+            Like.tweet_id == tweet_id
+        ).where(
+            Like.user_id == user_id
+        )
+        query_result = await self.session.execute(select_stm)
+        like = query_result.scalars().first()
+        if not like:
+            return False
+        return True

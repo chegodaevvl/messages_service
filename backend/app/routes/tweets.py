@@ -61,7 +61,7 @@ async def delete_tweet(
 
 @router.post("/{id}/likes", response_model=TweetResponse,
              response_model_exclude_unset=True,
-             name="tweets:delete-tweet",
+             name="tweets:like-tweet",
              status_code=status.HTTP_200_OK)
 async def like_tweet(
         id: int,
@@ -79,6 +79,33 @@ async def like_tweet(
         "user_id": user.id,
     }
     result = await tweet_crud.like_tweet(tweet_like)
+    return {
+        "result": result
+    }
+
+
+@router.delete("/{id}/likes", response_model=TweetResponse,
+               response_model_exclude_unset=True,
+               name="tweets:unlike-tweet",
+               status_code=status.HTTP_200_OK)
+async def unlike_tweet(
+        id: int,
+        x_token: str = Header(default=None),
+        user_crud: UserCRUD = user_crud,
+        tweet_crud: TweetCRUD = tweet_crud,
+) -> TweetResponse:
+    user = await user_crud.get_by_apikey(x_token)
+    if not await tweet_crud.check_by_id(id):
+        return await create_error_response(104)
+    if await tweet_crud.check_ownership(id, user.id):
+        return await create_error_response(106)
+    if not await tweet_crud.check_tweet_like(id, user.id):
+        return await create_error_response(107)
+    tweet_like = {
+        "tweet_id": id,
+        "user_id": user.id,
+    }
+    result = await tweet_crud.unlike_tweet(tweet_like)
     return {
         "result": result
     }
