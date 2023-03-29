@@ -40,7 +40,7 @@ async def create_tweet(
 
 @router.delete("/{id}", response_model=TweetResponse,
                response_model_exclude_unset=True,
-               name="tweets:create-tweet",
+               name="tweets:delete-tweet",
                status_code=status.HTTP_200_OK)
 async def delete_tweet(
         id: int,

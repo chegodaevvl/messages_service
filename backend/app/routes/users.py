@@ -97,7 +97,7 @@ async def follow_user(
 @router.delete("/{id}/follow",
                response_model=UserResponse,
                response_model_exclude_unset=True,
-               name="users:user_follow",
+               name="users:user_unfollow",
                status_code=status.HTTP_200_OK)
 async def unfollow_user(
     id: int,
