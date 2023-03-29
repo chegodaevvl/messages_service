@@ -79,7 +79,6 @@ class TestGetUser:
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
-        print(response)
         assert "following" in response["user"]
         assert len(response["user"]["following"]) == 1
         assert response["user"]["following"][0]["id"] == second_user.id
