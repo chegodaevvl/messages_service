@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import delete
 
-from app.db.models import Tweet
-from app.models.tweets import TweetCreate, TweetInDB
+from app.db.models import Tweet, Like
+from app.models.tweets import TweetCreate, TweetInDB, TweetLike
 from sqlalchemy.orm import selectinload
 
 
@@ -46,4 +46,10 @@ class TweetCRUD:
         tweet = query_result.scalars().first()
         if not tweet:
             return False
+        return True
+
+    async def like_tweet(self, tweet_like: TweetLike) -> bool:
+        tweet_like = Like(**tweet_like)
+        self.session.add(tweet_like)
+        await self.session.commit()
         return True

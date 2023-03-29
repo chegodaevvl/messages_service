@@ -79,11 +79,11 @@ class TestTweet:
         assert response["error_type"] == "Not Found"
         assert response["error_message"] == "No tweet found with such id!"
 
-    async def test_unlike_user(self,
-                               client: AsyncClient,
-                               test_tweet,
-                               test_user,
-                               second_user):
+    async def test_unlike_tweet(self,
+                                client: AsyncClient,
+                                test_tweet,
+                                test_user,
+                                second_user):
         result = await client.delete(f"api/tweets/{test_tweet.id}/likes", headers={"X-Token": second_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()

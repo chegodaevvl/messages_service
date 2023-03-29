@@ -14,3 +14,8 @@ class TweetInDB(IDModelMixin, TweetBase):
 
     class Config:
         orm_mode = True
+
+
+class TweetLike(CoreModel):
+    tweet_id: int
+    user_id: int

@@ -12,6 +12,8 @@ errors = {
           "error_message": "No tweet found with such id!"},
     105: {"error_type": "Not Authorized",
           "error_message": "You are unable to delete tweet, created by another user!"},
+    106: {"error_type": "Bad Request",
+          "error_message": "You are unable to like/unlike your own tweet!"},
 }
 
 
