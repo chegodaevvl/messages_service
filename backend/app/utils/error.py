@@ -16,6 +16,8 @@ errors = {
           "error_message": "You are unable to like/unlike your own tweet!"},
     107: {"error_type": "Bad Request",
           "error_message": "You are unable to unlike tweet, you don't like!"},
+    108: {"error_type": "Bad Request",
+          "error_message": "Uploaded file is not an image!"},
 }
 
 

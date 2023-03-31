@@ -1,4 +1,3 @@
-# from typing import Annotated
 from fastapi import APIRouter, Depends, Header, Request
 from fastapi import status
 

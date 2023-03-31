@@ -1,4 +1,3 @@
-from typing import List
 import pytest
 
 from httpx import AsyncClient
