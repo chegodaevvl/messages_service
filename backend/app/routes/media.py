@@ -20,9 +20,8 @@ async def upload_media(
         image: UploadFile,
         media_crud: MediaCRUD = media_crud,
 ) -> MediaResponse:
-    print(image.filename, image.content_type)
-    if not ("image" in image.content_type):
-        await create_error_response(108)
+    if "image" not in image.content_type:
+        return await create_error_response(108)
     new_media = {
         "file": image.filename
     }
