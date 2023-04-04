@@ -1,3 +1,4 @@
+from os import path, mkdir
 from fastapi import APIRouter, Depends, UploadFile
 from fastapi import status
 
@@ -26,7 +27,11 @@ async def upload_media(
         "file": image.filename
     }
     media_uploaded = await media_crud.upload_image(new_media)
+    if not path.exists("img"):
+        mkdir("img")
+    with open(path.join("img", media_uploaded.file), "wb") as test_image:
+        test_image.write(image.file.read())
     return {
-        "result": True,
+        "result": False,
         "media_id": media_uploaded.id
     }

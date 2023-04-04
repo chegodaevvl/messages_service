@@ -31,6 +31,8 @@ async def create_tweet(
         "tweet_data": tweet_data["tweet_data"],
         "user_id": user.id
     }
+    if "tweet_media_ids" in tweet_data:
+        new_tweet["tweet_media_ids"] = tweet_data["tweet_media_ids"]
     tweet_created = await tweet_crud.add_tweet(new_tweet)
     return {
         "result": True,
