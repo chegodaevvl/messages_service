@@ -32,6 +32,6 @@ async def upload_media(
     with open(path.join("img", media_uploaded.file), "wb") as test_image:
         test_image.write(image.file.read())
     return {
-        "result": False,
+        "result": True,
         "media_id": media_uploaded.id
     }

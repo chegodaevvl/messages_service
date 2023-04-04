@@ -30,9 +30,26 @@ class MediaCRUD:
         await self.session.execute(delete_stm)
         await self.session.commit()
 
-    async def link_images_tweet(self, tweet_id: int, media_ids: List[int]) -> None:
+    async def link_images_to_tweet(self, tweet_id: int, media_ids: List[int]) -> None:
         update_stm = update(Media).where(
             Media.id.in_(media_ids)
         ).values(tweet_id=tweet_id)
         await self.session.execute(update_stm)
         await self.session.commit()
+
+    async def get_images_by_tweet(self, tweet_id: int) -> List[str]:
+        select_stm = select(Media).where(
+            Media.tweet_id == tweet_id
+        )
+        query_result = await self.session.execute(select_stm)
+        images_list = list()
+        for item in query_result.scalars().all():
+            images_list.append(item.file)
+        return images_list
+
+    async def check_images_exist(self, media_ids: List[int]) -> bool:
+        select_stm = select(Media).where(
+            Media.id.in_(media_ids)
+        )
+        query_result = await self.session.execute(select_stm)
+        return len(query_result.scalars().all()) == len(media_ids)

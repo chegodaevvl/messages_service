@@ -3,7 +3,8 @@ from fastapi import status
 
 from app.db.repositories.users import UserCRUD
 from app.db.repositories.tweets import TweetCRUD
-from app.db.dependencies import get_user_crud, get_tweet_crud
+from app.db.repositories.media import MediaCRUD
+from app.db.dependencies import get_user_crud, get_tweet_crud, get_media_crud
 from app.models.response import TweetResponse
 from app.utils.error import create_error_response
 
@@ -13,6 +14,7 @@ router = APIRouter()
 
 user_crud = Depends(get_user_crud)
 tweet_crud = Depends(get_tweet_crud)
+media_crud = Depends(get_media_crud)
 
 
 @router.post("", response_model=TweetResponse,
@@ -24,6 +26,7 @@ async def create_tweet(
         api_key: str = Header(default=None),
         user_crud: UserCRUD = user_crud,
         tweet_crud: TweetCRUD = tweet_crud,
+        media_crud: MediaCRUD = media_crud,
 ) -> TweetResponse:
     user = await user_crud.get_by_apikey(api_key)
     tweet_data = await request.json()
@@ -31,9 +34,14 @@ async def create_tweet(
         "tweet_data": tweet_data["tweet_data"],
         "user_id": user.id
     }
+    images_ids = list()
     if "tweet_media_ids" in tweet_data:
-        new_tweet["tweet_media_ids"] = tweet_data["tweet_media_ids"]
+        images_ids = tweet_data["tweet_media_ids"],
+        if not await media_crud.check_images_exist(images_ids):
+            return await create_error_response(109)
     tweet_created = await tweet_crud.add_tweet(new_tweet)
+    if not images_ids:
+        await media_crud.link_images_to_tweet(tweet_created.id, images_ids)
     return {
         "result": True,
         "tweet_id": tweet_created.id,
