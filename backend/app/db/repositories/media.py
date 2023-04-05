@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import delete, update
+from sqlalchemy import delete, update, func
 
 from app.db.models import Media
 from app.models.media import MediaCreate, MediaInDB
@@ -48,8 +48,10 @@ class MediaCRUD:
         return images_list
 
     async def check_images_exist(self, media_ids: List[int]) -> bool:
-        select_stm = select(Media).where(
+        select_stm = select(func.count()).select_from(Media).where(
             Media.id.in_(media_ids)
+        ).where(
+            Media.tweet_id is None
         )
         query_result = await self.session.execute(select_stm)
-        return len(query_result.scalars().all()) == len(media_ids)
+        return query_result.scalars().first() == len(media_ids)

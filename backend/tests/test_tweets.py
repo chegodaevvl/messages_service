@@ -22,6 +22,24 @@ class TestTweet:
         assert response["result"] is True
         assert response["tweet_id"] == 1
 
+    async def test_add_tweet_with_wrong_image(
+            self,
+            client: AsyncClient,
+            test_user,
+            test_media,
+    ) -> None:
+        images_ids = [test_media.id + 1000]
+        test_tweet = {
+            "tweet_data": "Test tweet message",
+            "tweet_media_ids": images_ids
+        }
+        result = await client.post("api/tweets", headers={"api-key": test_user.api_key}, json=test_tweet)
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert response["result"] is False
+        assert response["error_type"] == "Bad Request"
+        assert response["error_message"] == "Wrong number of the tweet images!"
+
     async def test_remove_tweet(self,
                                 client: AsyncClient,
                                 test_user,

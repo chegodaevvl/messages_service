@@ -36,7 +36,7 @@ async def create_tweet(
     }
     images_ids = list()
     if "tweet_media_ids" in tweet_data:
-        images_ids = tweet_data["tweet_media_ids"],
+        images_ids = tweet_data["tweet_media_ids"]
         if not await media_crud.check_images_exist(images_ids):
             return await create_error_response(109)
     tweet_created = await tweet_crud.add_tweet(new_tweet)
