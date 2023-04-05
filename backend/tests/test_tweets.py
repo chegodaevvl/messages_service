@@ -140,3 +140,36 @@ class TestTweet:
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
+
+    async def test_full_example(self,
+                                db: AsyncSession,
+                                client: AsyncClient,
+                                test_user):
+        media_crud = MediaCRUD(db)
+        path_to_file = "tests/image.jpeg"
+        images = {
+            "image": open(path_to_file, "rb")
+        }
+        result = await client.post("api/media", headers={"api-key": test_user.api_key}, files=images)
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert response["result"] is True
+        media_id = response["media_id"]
+        assert path.exists(path.join("img", f"image{media_id}.jpeg"))
+        images_ids = [media_id]
+        test_tweet = {
+            "tweet_data": "Test tweet message",
+            "tweet_media_ids": images_ids
+        }
+        result = await client.post("api/tweets", headers={"api-key": test_user.api_key}, json=test_tweet)
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        tweet_id = response["tweet_id"]
+        assert response["result"] is True
+        assert await media_crud.tweet_images_count(tweet_id) == 1
+        result = await client.delete(f"api/tweets/{tweet_id}", headers={"api-key": test_user.api_key})
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert response["result"] is True
+        assert await media_crud.tweet_images_count(tweet_id) == 0
+        assert not path.exists(path.join("img", f"image{media_id}.jpeg"))
