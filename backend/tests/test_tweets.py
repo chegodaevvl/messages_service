@@ -1,9 +1,11 @@
 from os import path
 import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from httpx import AsyncClient
 
 from fastapi import status
+from app.db.repositories.media import MediaCRUD
 
 
 pytestmark = pytest.mark.asyncio
@@ -56,10 +58,12 @@ class TestTweet:
 
     async def test_add_tweet_with_image(
             self,
+            db: AsyncSession,
             client: AsyncClient,
             test_user,
             test_media,
     ) -> None:
+        media_crud = MediaCRUD(db)
         images_ids = [test_media.id]
         test_tweet = {
             "tweet_data": "Test tweet message",
@@ -69,6 +73,7 @@ class TestTweet:
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
+        assert await media_crud.tweet_images_count(response["tweet_id"]) == 1
         images_ids = [test_media.id]
         test_tweet = {
             "tweet_data": "Test tweet message",
