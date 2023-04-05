@@ -1,3 +1,4 @@
+from os import path, remove
 from fastapi import APIRouter, Depends, Header, Request
 from fastapi import status
 
@@ -34,13 +35,13 @@ async def create_tweet(
         "tweet_data": tweet_data["tweet_data"],
         "user_id": user.id
     }
-    images_ids = list()
+    images_ids = None
     if "tweet_media_ids" in tweet_data:
         images_ids = tweet_data["tweet_media_ids"]
         if not await media_crud.check_images_exist(images_ids):
             return await create_error_response(109)
     tweet_created = await tweet_crud.add_tweet(new_tweet)
-    if not images_ids:
+    if images_ids:
         await media_crud.link_images_to_tweet(tweet_created.id, images_ids)
     return {
         "result": True,
@@ -57,13 +58,17 @@ async def delete_tweet(
         api_key: str = Header(default=None),
         user_crud: UserCRUD = user_crud,
         tweet_crud: TweetCRUD = tweet_crud,
+        media_crud: MediaCRUD = media_crud,
 ) -> TweetResponse:
     user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)
     if not await tweet_crud.check_ownership(id, user.id):
         return await create_error_response(105)
+    images_list = await media_crud.get_images_by_tweet(id)
     result = await tweet_crud.delete_tweet(id)
+    for image in images_list:
+        remove(path.join("img", image))
     return {
         "result": result
     }

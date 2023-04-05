@@ -20,7 +20,7 @@ class MediaCRUD:
         new_media.file = f"image{new_media.id}"
         if dot_idx != -1:
             new_media.file += media["file"][dot_idx:]
-        # await self.session.commit()
+        await self.session.commit()
         return MediaInDB.from_orm(new_media)
 
     async def delete_images(self, tweet_id: int) -> None:
@@ -48,10 +48,10 @@ class MediaCRUD:
         return images_list
 
     async def check_images_exist(self, media_ids: List[int]) -> bool:
-        select_stm = select(func.count()).select_from(Media).where(
+        select_stm = select(func.count(Media.id)).select_from(Media).where(
             Media.id.in_(media_ids)
         ).where(
-            Media.tweet_id is None
+            Media.tweet_id == None
         )
         query_result = await self.session.execute(select_stm)
         return query_result.scalars().first() == len(media_ids)
