@@ -23,7 +23,7 @@ from app.models.media import MediaCreate, MediaInDB
 def apply_migrations():
     environ["DB_SUFFIX"] = "_test"
     config = Config("alembic.ini")
-    command.upgrade(config, "head")
+    command.upgrade(config, "heads")
     yield
     command.downgrade(config, "base")
 

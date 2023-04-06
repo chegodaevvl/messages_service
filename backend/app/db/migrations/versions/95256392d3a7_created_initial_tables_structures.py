@@ -1,8 +1,8 @@
-"""Create main tables
+"""Created initial tables structures
 
-Revision ID: cf7897fc6a58
+Revision ID: 95256392d3a7
 Revises: 
-Create Date: 2023-02-20 13:12:06.385893
+Create Date: 2023-04-06 12:04:11.501510
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'cf7897fc6a58'
+revision = '95256392d3a7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -47,7 +47,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('tweet_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['tweet_id'], ['tweets.id'], ),
+    sa.ForeignKeyConstraint(['tweet_id'], ['tweets.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -56,7 +56,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('file', sa.String(), nullable=True),
     sa.Column('tweet_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['tweet_id'], ['tweets.id'], ),
+    sa.ForeignKeyConstraint(['tweet_id'], ['tweets.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_medias_id'), 'medias', ['id'], unique=False)
