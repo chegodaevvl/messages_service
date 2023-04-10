@@ -4,7 +4,7 @@ import pytest
 from httpx import AsyncClient
 
 from fastapi import status
-
+from app.core.settings import settings
 
 pytestmark = pytest.mark.asyncio
 
@@ -23,8 +23,8 @@ class TestMedia:
         response = result.json()
         assert response["result"] is True
         assert response["media_id"] == 1
-        assert path.exists(path.join("img", f"image{response['media_id']}.jpeg"))
-        remove(path.join("img", f"image{response['media_id']}.jpeg"))
+        assert path.exists(path.join(settings.MEDIA_PATH, f"image{response['media_id']}.jpeg"))
+        remove(path.join(settings.MEDIA_PATH, f"image{response['media_id']}.jpeg"))
 
     async def test_upload_wrong_media(self,
                                       client: AsyncClient,

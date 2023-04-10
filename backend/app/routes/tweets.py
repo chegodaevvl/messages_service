@@ -8,6 +8,7 @@ from app.db.repositories.media import MediaCRUD
 from app.db.dependencies import get_user_crud, get_tweet_crud, get_media_crud
 from app.models.response import TweetResponse
 from app.utils.error import create_error_response
+from app.core.settings import settings
 
 
 router = APIRouter()
@@ -68,7 +69,7 @@ async def delete_tweet(
     images_list = await media_crud.get_images_by_tweet(id)
     result = await tweet_crud.delete_tweet(id)
     for image in images_list:
-        remove(path.join("img", image))
+        remove(path.join(settings.MEDIA_PATH, image))
     return {
         "result": result
     }

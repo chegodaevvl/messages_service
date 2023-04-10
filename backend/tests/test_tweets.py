@@ -6,6 +6,7 @@ from httpx import AsyncClient
 
 from fastapi import status
 from app.db.repositories.media import MediaCRUD
+from app.core.settings import settings
 
 
 pytestmark = pytest.mark.asyncio
@@ -155,7 +156,7 @@ class TestTweet:
         response = result.json()
         assert response["result"] is True
         media_id = response["media_id"]
-        assert path.exists(path.join("img", f"image{media_id}.jpeg"))
+        assert path.exists(path.join(settings.MEDIA_PATH, f"image{media_id}.jpeg"))
         images_ids = [media_id]
         test_tweet = {
             "tweet_data": "Test tweet message",
@@ -172,4 +173,4 @@ class TestTweet:
         response = result.json()
         assert response["result"] is True
         assert await media_crud.tweet_images_count(tweet_id) == 0
-        assert not path.exists(path.join("img", f"image{media_id}.jpeg"))
+        assert not path.exists(path.join(settings.MEDIA_PATH, f"image{media_id}.jpeg"))
