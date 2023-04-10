@@ -1,3 +1,4 @@
+from os import path, remove
 import pytest
 
 from httpx import AsyncClient
@@ -22,6 +23,8 @@ class TestMedia:
         response = result.json()
         assert response["result"] is True
         assert response["media_id"] == 1
+        assert path.exists(path.join("img", f"image{response['media_id']}.jpeg"))
+        remove(path.join("img", f"image{response['media_id']}.jpeg"))
 
     async def test_upload_wrong_media(self,
                                       client: AsyncClient,
