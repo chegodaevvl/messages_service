@@ -20,7 +20,7 @@ class TestGetUser:
     async def test_get_current_user(self,
                                     client: AsyncClient,
                                     test_user) -> None:
-        result = await client.get(f"api/users/me", headers={"X-Token": test_user.api_key})
+        result = await client.get(f"api/users/me", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
@@ -29,7 +29,7 @@ class TestGetUser:
     async def test_get_user_by_id(self,
                                   client: AsyncClient,
                                   test_user) -> None:
-        result = await client.get(f"api/users/{test_user.id}", headers={"X-Token": test_user.api_key})
+        result = await client.get(f"api/users/{test_user.id}", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
@@ -38,7 +38,7 @@ class TestGetUser:
     async def test_get_user_by_wrong_id(self,
                                         client: AsyncClient,
                                         test_user):
-        result = await client.get(f"api/users/{test_user.id + 1000}", headers={"X-Token": test_user.api_key})
+        result = await client.get(f"api/users/{test_user.id + 1000}", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
@@ -48,7 +48,7 @@ class TestGetUser:
     async def test_follow_by_self(self,
                                   client: AsyncClient,
                                   test_user):
-        result = await client.post(f"api/users/{test_user.id}/follow", headers={"X-Token": test_user.api_key})
+        result = await client.post(f"api/users/{test_user.id}/follow", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
@@ -59,15 +59,15 @@ class TestGetUser:
                                client: AsyncClient,
                                test_user,
                                second_user):
-        result = await client.post(f"api/users/{second_user.id}/follow", headers={"X-Token": test_user.api_key})
+        result = await client.post(f"api/users/{second_user.id}/follow", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
-        result = await client.post(f"api/users/{second_user.id}/follow", headers={"X-Token": test_user.api_key})
+        result = await client.post(f"api/users/{second_user.id}/follow", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
-        result = await client.get(f"api/users/{second_user.id}", headers={"X-Token": test_user.api_key})
+        result = await client.get(f"api/users/{second_user.id}", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
@@ -75,11 +75,10 @@ class TestGetUser:
         assert len(response["user"]["followers"]) == 1
         assert response["user"]["followers"][0]["id"] == test_user.id
         assert response["user"]["followers"][0]["name"] == test_user.name
-        result = await client.get(f"api/users/{test_user.id}", headers={"X-Token": test_user.api_key})
+        result = await client.get(f"api/users/{test_user.id}", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
-        print(response)
         assert "following" in response["user"]
         assert len(response["user"]["following"]) == 1
         assert response["user"]["following"][0]["id"] == second_user.id
@@ -89,7 +88,7 @@ class TestGetUser:
                                          client: AsyncClient,
                                          test_user,
                                          second_user):
-        result = await client.post(f"api/users/{second_user.id + 100}/follow", headers={"X-Token": test_user.api_key})
+        result = await client.post(f"api/users/{second_user.id + 100}/follow", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is False
@@ -100,7 +99,7 @@ class TestGetUser:
                                  client: AsyncClient,
                                  test_user,
                                  second_user):
-        result = await client.delete(f"api/users/{second_user.id}/follow", headers={"X-Token": test_user.api_key})
+        result = await client.delete(f"api/users/{second_user.id}/follow", headers={"api-key": test_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True

@@ -11,8 +11,10 @@ from alembic.config import Config
 
 from app.db.database import async_engine
 from app.db.repositories.users import UserCRUD
+from app.db.repositories.tweets import TweetCRUD
 from app.db.models import User
 from app.models.users import UserCreate, UserInDB
+from app.models.tweets import TweetCreate, TweetInDB
 
 
 @pytest_asyncio.fixture(scope="session")
@@ -67,3 +69,14 @@ async def second_user(db) -> User:
     second_user = UserCreate(name="Super Second",
                              api_key="JustASecret")
     return await user_crud.add_user(second_user)
+
+
+@pytest_asyncio.fixture(scope="function")
+async def test_tweet(db, test_user) -> TweetInDB:
+
+    tweet_crud = TweetCRUD(db)
+    test_tweet = {
+        "tweet_data": "Test tweet text",
+        "user_id": test_user.id
+    }
+    return await tweet_crud.add_tweet(test_tweet)

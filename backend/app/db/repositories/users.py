@@ -2,7 +2,7 @@ from typing import List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import insert, delete
+from sqlalchemy import delete
 
 from app.db.models import User, Follower
 from app.models.users import UserInDB, UserCreate, FollowerInfo, UserDetail

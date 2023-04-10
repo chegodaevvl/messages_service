@@ -1,3 +1,4 @@
+# from typing import Annotated
 from fastapi import APIRouter, Depends, Header
 from fastapi import status
 
@@ -19,10 +20,10 @@ user_crud = Depends(get_user_crud)
             name="users:get-current-user",
             status_code=status.HTTP_200_OK)
 async def get_current_user(
-        x_token: str = Header(default=None),
+        api_key: str = Header(default=None),
         user_crud: UserCRUD = user_crud,
 ) -> UserResponse:
-    user = await user_crud.get_by_apikey(x_token)
+    user = await user_crud.get_by_apikey(api_key)
     user_detail = {
         "id": user.id,
         "name": user.name
@@ -73,10 +74,10 @@ async def get_user_by_id(
              status_code=status.HTTP_200_OK)
 async def follow_user(
     id: int,
-    x_token: str = Header(default=None),
+    api_key: str = Header(default=None),
     user_crud: UserCRUD = user_crud,
 ) -> UserResponse:
-    following_user = await user_crud.get_by_apikey(x_token)
+    following_user = await user_crud.get_by_apikey(api_key)
     followed_user = await user_crud.get_by_id(id)
     if not followed_user:
         return await create_error_response(101)
@@ -97,14 +98,14 @@ async def follow_user(
 @router.delete("/{id}/follow",
                response_model=UserResponse,
                response_model_exclude_unset=True,
-               name="users:user_follow",
+               name="users:user_unfollow",
                status_code=status.HTTP_200_OK)
 async def unfollow_user(
     id: int,
-    x_token: str = Header(default=None),
+    api_key: str = Header(default=None),
     user_crud: UserCRUD = user_crud,
 ) -> UserResponse:
-    following_user = await user_crud.get_by_apikey(x_token)
+    following_user = await user_crud.get_by_apikey(api_key)
     followed_user = await user_crud.get_by_id(id)
     if not followed_user:
         return await create_error_response(101)
