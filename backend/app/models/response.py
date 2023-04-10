@@ -13,3 +13,9 @@ class TweetResponse(BaseResponse):
     tweet_id: Optional[int]
     error_type: Optional[str]
     error_message: Optional[str]
+
+
+class MediaResponse(BaseResponse):
+    media_id: Optional[int]
+    error_type: Optional[str]
+    error_message: Optional[str]

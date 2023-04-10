@@ -20,7 +20,7 @@ class Media(Base):
     __tablename__ = "medias"
     id = Column(Integer, primary_key=True, index=True)
     file = Column(String)
-    tweet_id = Column(Integer, ForeignKey("tweets.id"))
+    tweet_id = Column(Integer, ForeignKey("tweets.id", ondelete='CASCADE'))
 
 
 class Follower(Base):
@@ -44,5 +44,5 @@ class Tweet(Base):
 class Like(Base):
     __tablename__ = "likes"
     id = Column(Integer, primary_key=True, index=True)
-    tweet_id = Column(Integer, ForeignKey("tweets.id"))
+    tweet_id = Column(Integer, ForeignKey("tweets.id", ondelete='CASCADE'))
     user_id = Column(Integer, ForeignKey("users.id"))

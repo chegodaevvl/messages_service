@@ -1,3 +1,5 @@
+from os import path
+from sys import modules
 from pydantic import BaseSettings, Field
 
 
@@ -21,6 +23,12 @@ class Settings(BaseSettings):
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:" \
                f"{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:" \
                f"{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+
+    @property
+    def MEDIA_PATH(self) -> str:
+        if "pytest" in modules:
+            return path.join("tests", "img")
+        return "img"
 
 
 settings = Settings()

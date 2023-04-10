@@ -12,16 +12,18 @@ from alembic.config import Config
 from app.db.database import async_engine
 from app.db.repositories.users import UserCRUD
 from app.db.repositories.tweets import TweetCRUD
+from app.db.repositories.media import MediaCRUD
 from app.db.models import User
 from app.models.users import UserCreate, UserInDB
 from app.models.tweets import TweetCreate, TweetInDB
+from app.models.media import MediaCreate, MediaInDB
 
 
 @pytest_asyncio.fixture(scope="session")
 def apply_migrations():
     environ["DB_SUFFIX"] = "_test"
     config = Config("alembic.ini")
-    command.upgrade(config, "head")
+    command.upgrade(config, "heads")
     yield
     command.downgrade(config, "base")
 
@@ -80,3 +82,13 @@ async def test_tweet(db, test_user) -> TweetInDB:
         "user_id": test_user.id
     }
     return await tweet_crud.add_tweet(test_tweet)
+
+
+@pytest_asyncio.fixture(scope="function")
+async def test_media(db) -> MediaInDB:
+
+    media_crud = MediaCRUD(db)
+    test_media = {
+        "file": "image.jpeg",
+    }
+    return await media_crud.upload_image(test_media)
