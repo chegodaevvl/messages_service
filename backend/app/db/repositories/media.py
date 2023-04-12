@@ -16,10 +16,10 @@ class MediaCRUD:
         new_media = Media(**media)
         self.session.add(new_media)
         await self.session.commit()
-        dot_idx = new_media.file.rfind(".")
-        new_media.file = f"image{new_media.id}"
+        dot_idx = new_media.link.rfind(".")
+        new_media.link = f"image{new_media.id}"
         if dot_idx != -1:
-            new_media.file += media["file"][dot_idx:]
+            new_media.link += media["link"][dot_idx:]
         await self.session.commit()
         return MediaInDB.from_orm(new_media)
 
@@ -44,7 +44,7 @@ class MediaCRUD:
         query_result = await self.session.execute(select_stm)
         images_list = list()
         for item in query_result.scalars().all():
-            images_list.append(item.file)
+            images_list.append(item.link)
         return images_list
 
     async def check_images_exist(self, media_ids: List[int]) -> bool:

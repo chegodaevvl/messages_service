@@ -89,6 +89,6 @@ async def test_media(db) -> MediaInDB:
 
     media_crud = MediaCRUD(db)
     test_media = {
-        "file": "image.jpeg",
+        "link": "image.jpeg",
     }
     return await media_crud.upload_image(test_media)

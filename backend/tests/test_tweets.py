@@ -174,3 +174,14 @@ class TestTweet:
         assert response["result"] is True
         assert await media_crud.tweet_images_count(tweet_id) == 0
         assert not path.exists(path.join(settings.MEDIA_PATH, f"image{media_id}.jpeg"))
+
+    async def test_get_tweets(self,
+                        client: AsyncClient,
+                        test_tweet,
+                        test_user,
+                        second_user):
+
+        result = await client.get(f"api/tweets", headers={"api-key": second_user.api_key})
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert response["result"] is True

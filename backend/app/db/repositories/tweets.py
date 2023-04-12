@@ -75,3 +75,7 @@ class TweetCRUD:
         if not like:
             return False
         return True
+
+    async def get_tweets(self):
+        tweets_list = select(Tweet).options(selectinload(Tweet.medias))
+        return tweets_list.scalars().all()

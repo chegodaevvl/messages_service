@@ -2,7 +2,7 @@ from app.models.core import CoreModel, IDModelMixin
 
 
 class MediaBase(CoreModel):
-    file: str
+    link: str
 
 
 class MediaCreate(MediaBase):

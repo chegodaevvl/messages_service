@@ -12,14 +12,12 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
     api_key = Column(String, nullable=True)
-    tweets = relationship("Tweet")
-    likes = relationship("Like")
 
 
 class Media(Base):
-    __tablename__ = "medias"
+    __tablename__ = "media"
     id = Column(Integer, primary_key=True, index=True)
-    file = Column(String)
+    link = Column(String)
     tweet_id = Column(Integer, ForeignKey("tweets.id", ondelete='CASCADE'))
 
 
@@ -37,7 +35,8 @@ class Tweet(Base):
     id = Column(Integer, primary_key=True, index=True)
     tweet_data = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id"))
-    medias = relationship("Media")
+    author = relationship("User")
+    media = relationship("Media")
     likes = relationship("Like")
 
 
@@ -46,3 +45,4 @@ class Like(Base):
     id = Column(Integer, primary_key=True, index=True)
     tweet_id = Column(Integer, ForeignKey("tweets.id", ondelete='CASCADE'))
     user_id = Column(Integer, ForeignKey("users.id"))
+    liker = relationship("User")

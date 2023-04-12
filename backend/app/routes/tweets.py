@@ -75,6 +75,21 @@ async def delete_tweet(
     }
 
 
+@router.get("", response_model=TweetResponse,
+            response_model_exclude_unset=True,
+            name="tweets:get-tweets",
+            status_code=status.HTTP_200_OK)
+async def get_tweets(
+        api_key: str = Header(default=None),
+        user_crud: UserCRUD = user_crud,
+        tweet_crud: TweetCRUD = tweet_crud,
+        media_crud: MediaCRUD = media_crud,
+) -> TweetResponse:
+    return {
+        "result": False
+    }
+
+
 @router.post("/{id}/likes", response_model=TweetResponse,
              response_model_exclude_unset=True,
              name="tweets:like-tweet",
