@@ -181,6 +181,9 @@ class TestTweet:
                         test_user,
                         second_user):
 
+        result = await client.post(f"api/tweets", headers={"api-key": second_user.api_key})
+        result = await client.get(f"api/tweets", headers={"api-key": second_user.api_key})
+        result = await client.get(f"api/tweets", headers={"api-key": second_user.api_key})
         result = await client.get(f"api/tweets", headers={"api-key": second_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()

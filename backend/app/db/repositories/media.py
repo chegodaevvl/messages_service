@@ -57,7 +57,6 @@ class MediaCRUD:
         return query_result.scalars().first() == len(media_ids)
 
     async def tweet_images_count(self, tweet_id: int) -> int:
-        print(tweet_id)
         select_stm = select(func.count(Media.id)).select_from(Media).where(
             Media.tweet_id == tweet_id
         )

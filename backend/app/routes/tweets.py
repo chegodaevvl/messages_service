@@ -83,8 +83,24 @@ async def get_tweets(
         api_key: str = Header(default=None),
         user_crud: UserCRUD = user_crud,
         tweet_crud: TweetCRUD = tweet_crud,
-        media_crud: MediaCRUD = media_crud,
 ) -> TweetResponse:
+    user = await user_crud.get_by_apikey(api_key)
+    tweets_list = await tweet_crud.get_tweets(user.id)
+    tweets = list()
+    for tweet in tweets_list:
+        tweet_details = {
+            "id": tweet.id,
+            "content": tweet.tweet_data,
+            "attachments": list(),
+            "author": tweet.author,
+            "likes": list()
+        }
+        for attachment in tweet.media:
+            tweet_details["attachments"].append(attachment.link)
+        for like in tweet.likes:
+            tweet_details["attachments"].append(like.liker)
+        tweets.append(tweet_details)
+    print(len(tweets))
     return {
         "result": False
     }

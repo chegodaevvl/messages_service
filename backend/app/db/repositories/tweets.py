@@ -2,10 +2,10 @@ from typing import List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import delete
+from sqlalchemy import delete, func
 
-from app.db.models import Tweet, Like
-from app.models.tweets import TweetCreate, TweetInDB, TweetLike
+from app.db.models import Tweet, Like, Media, Follower
+from app.models.tweets import TweetCreate, TweetInDB, TweetLike, TweetPublic
 from sqlalchemy.orm import selectinload
 
 
@@ -76,6 +76,19 @@ class TweetCRUD:
             return False
         return True
 
-    async def get_tweets(self):
-        tweets_list = select(Tweet).options(selectinload(Tweet.medias))
-        return tweets_list.scalars().all()
+    async def get_tweets(self, user_id: int) -> List:
+        select_stm = select(
+            Tweet).select_from(
+            Like).outerjoin(
+            Tweet.likes).group_by(
+            Tweet).order_by(
+            func.count(Like.id).desc()).options(
+            selectinload(Tweet.media),
+            selectinload(Tweet.author),
+            selectinload(Tweet.likes).subqueryload(Like.liker)
+        ).where(Tweet.user_id.in_(
+            select(Follower.following_id).where(Follower.follower_id == user_id)
+        ))
+        query_result = await self.session.execute(select_stm)
+        tweets_list = query_result.scalars().all()
+        return tweets_list
