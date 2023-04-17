@@ -13,7 +13,7 @@ class TestGetUser:
 
     async def test_users_wrong_apikey(self,
                                       client: AsyncClient,
-                                      ) -> None:
+                                      first_user) -> None:
         result = await client.get(f"api/users/me")
         assert result.status_code == status.HTTP_403_FORBIDDEN
 
