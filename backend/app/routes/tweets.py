@@ -98,8 +98,9 @@ async def get_tweets(
         for attachment in tweet.media:
             tweet_details["attachments"].append(attachment.link)
         for like in tweet.likes:
-            tweet_details["attachments"].append(like.liker)
+            tweet_details["likes"].append(like.liker)
         tweets.append(tweet_details)
+        print(tweet_details)
     print(len(tweets))
     return {
         "result": True,

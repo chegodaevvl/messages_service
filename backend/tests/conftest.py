@@ -90,7 +90,7 @@ async def second_tweet(db, first_user) -> TweetInDB:
 
     tweet_crud = TweetCRUD(db)
     second_tweet = {
-        "tweet_data": "Test tweet text",
+        "tweet_data": "This is a second tweet",
         "user_id": first_user.id
     }
     yield await tweet_crud.add_tweet(second_tweet)

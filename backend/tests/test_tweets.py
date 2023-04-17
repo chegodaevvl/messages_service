@@ -182,16 +182,30 @@ class TestTweet:
     async def test_get_tweets(self,
                         client: AsyncClient,
                         first_tweet,
+                        second_tweet,
                         first_user,
                         second_user):
         await client.post(f"api/users/{first_user.id}/follow", headers={"api-key": second_user.api_key})
+        await client.post(f"api/tweets/{second_tweet.id}/likes", headers={"api-key": second_user.api_key})
         result = await client.get(f"api/tweets", headers={"api-key": second_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
         tweets_list = response["tweets"]
-        assert len(tweets_list) == 1
+        assert len(tweets_list) == 2
         tweet = tweets_list[0]
+        assert tweet["id"] == second_tweet.id
+        assert tweet["content"] == second_tweet.tweet_data
+        attachments = tweet["attachments"]
+        assert len(attachments) == 0
+        author = tweet["author"]
+        assert author["id"] == first_user.id
+        assert author["name"] == first_user.name
+        likers = tweet["likes"]
+        assert len(likers) == 1
+        assert likers[0]["id"] == second_user.id
+        assert likers[0]["name"] == second_user.name
+        tweet = tweets_list[1]
         assert tweet["id"] == first_tweet.id
         assert tweet["content"] == first_tweet.tweet_data
         attachments = tweet["attachments"]
