@@ -1,7 +1,7 @@
-from typing import Optional
+from typing import Optional, List
 from app.models.core import BaseResponse
 from app.models.users import UserPublic
-
+from app.models.tweets import TweetPublic
 
 class UserResponse(BaseResponse):
     user: Optional[UserPublic]
@@ -17,5 +17,11 @@ class TweetResponse(BaseResponse):
 
 class MediaResponse(BaseResponse):
     media_id: Optional[int]
+    error_type: Optional[str]
+    error_message: Optional[str]
+
+
+class TweetsResponse(BaseResponse):
+    tweets: Optional[List[TweetPublic]]
     error_type: Optional[str]
     error_message: Optional[str]

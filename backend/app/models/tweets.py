@@ -24,7 +24,8 @@ class TweetLike(CoreModel):
     user_id: int
 
 
-class TweetPublic(TweetInDB):
+class TweetPublic(IDModelMixin):
+    content: str
     attachments: List[MediaBase] = []
     author: UserDetail
     likes: List[UserDetail] = []

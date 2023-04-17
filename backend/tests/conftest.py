@@ -56,12 +56,12 @@ async def client(async_app: FastAPI) -> AsyncClient:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def test_user(db) -> User:
+async def first_user(db) -> User:
 
     user_crud = UserCRUD(db)
-    test_user = UserCreate(name="Chosen One",
+    first_user = UserCreate(name="Chosen One",
                            api_key="Superior")
-    return await user_crud.add_user(test_user)
+    return await user_crud.add_user(first_user)
 
 
 @pytest_asyncio.fixture(scope="function")
@@ -74,14 +74,27 @@ async def second_user(db) -> User:
 
 
 @pytest_asyncio.fixture(scope="function")
-async def test_tweet(db, test_user) -> TweetInDB:
+async def first_tweet(db, first_user) -> TweetInDB:
 
     tweet_crud = TweetCRUD(db)
-    test_tweet = {
+    first_tweet = {
         "tweet_data": "Test tweet text",
-        "user_id": test_user.id
+        "user_id": first_user.id
     }
-    return await tweet_crud.add_tweet(test_tweet)
+    yield await tweet_crud.add_tweet(first_tweet)
+    await tweet_crud.delete_all_tweets()
+
+
+@pytest_asyncio.fixture(scope="function")
+async def second_tweet(db, first_user) -> TweetInDB:
+
+    tweet_crud = TweetCRUD(db)
+    second_tweet = {
+        "tweet_data": "Test tweet text",
+        "user_id": first_user.id
+    }
+    yield await tweet_crud.add_tweet(second_tweet)
+    await tweet_crud.delete_all_tweets()
 
 
 @pytest_asyncio.fixture(scope="function")

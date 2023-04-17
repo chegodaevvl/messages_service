@@ -6,7 +6,7 @@ from app.db.repositories.users import UserCRUD
 from app.db.repositories.tweets import TweetCRUD
 from app.db.repositories.media import MediaCRUD
 from app.db.dependencies import get_user_crud, get_tweet_crud, get_media_crud
-from app.models.response import TweetResponse
+from app.models.response import TweetResponse, TweetsResponse
 from app.utils.error import create_error_response
 from app.core.settings import settings
 
@@ -75,7 +75,7 @@ async def delete_tweet(
     }
 
 
-@router.get("", response_model=TweetResponse,
+@router.get("", response_model=TweetsResponse,
             response_model_exclude_unset=True,
             name="tweets:get-tweets",
             status_code=status.HTTP_200_OK)
@@ -102,7 +102,8 @@ async def get_tweets(
         tweets.append(tweet_details)
     print(len(tweets))
     return {
-        "result": False
+        "result": True,
+        "tweets": tweets
     }
 
 

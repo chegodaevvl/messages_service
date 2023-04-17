@@ -92,3 +92,8 @@ class TweetCRUD:
         query_result = await self.session.execute(select_stm)
         tweets_list = query_result.scalars().all()
         return tweets_list
+
+    async def delete_all_tweets(self) -> None:
+        delete_stm = delete(Tweet)
+        await self.session.execute(delete_stm)
+        await self.session.commit()
