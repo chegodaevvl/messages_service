@@ -26,7 +26,7 @@ class TweetLike(CoreModel):
 
 class TweetPublic(IDModelMixin):
     content: str
-    attachments: List[MediaBase] = []
+    attachments: List[str] = []
     author: UserDetail
     likes: List[UserDetail] = []
 

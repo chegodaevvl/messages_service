@@ -181,12 +181,16 @@ class TestTweet:
 
     async def test_get_tweets(self,
                         client: AsyncClient,
+                        db: AsyncSession,
                         first_tweet,
                         second_tweet,
                         first_user,
-                        second_user):
+                        second_user,
+                        test_media):
+        media_crud = MediaCRUD(db)
         await client.post(f"api/users/{first_user.id}/follow", headers={"api-key": second_user.api_key})
         await client.post(f"api/tweets/{second_tweet.id}/likes", headers={"api-key": second_user.api_key})
+        await media_crud.link_images_to_tweet(second_tweet.id, [test_media.id])
         result = await client.get(f"api/tweets", headers={"api-key": second_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
@@ -197,7 +201,8 @@ class TestTweet:
         assert tweet["id"] == second_tweet.id
         assert tweet["content"] == second_tweet.tweet_data
         attachments = tweet["attachments"]
-        assert len(attachments) == 0
+        assert len(attachments) == 1
+        assert attachments[0] == test_media.link
         author = tweet["author"]
         assert author["id"] == first_user.id
         assert author["name"] == first_user.name
