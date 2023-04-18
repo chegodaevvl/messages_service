@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import DeclarativeBase, relationship
 
 
 class Base(DeclarativeBase):
@@ -18,7 +17,7 @@ class Media(Base):
     __tablename__ = "media"
     id = Column(Integer, primary_key=True, index=True)
     link = Column(String)
-    tweet_id = Column(Integer, ForeignKey("tweets.id", ondelete='CASCADE'))
+    tweet_id = Column(Integer, ForeignKey("tweets.id", ondelete="CASCADE"))
 
 
 class Follower(Base):
@@ -43,6 +42,6 @@ class Tweet(Base):
 class Like(Base):
     __tablename__ = "likes"
     id = Column(Integer, primary_key=True, index=True)
-    tweet_id = Column(Integer, ForeignKey("tweets.id", ondelete='CASCADE'))
+    tweet_id = Column(Integer, ForeignKey("tweets.id", ondelete="CASCADE"))
     user_id = Column(Integer, ForeignKey("users.id"))
     liker = relationship("User")

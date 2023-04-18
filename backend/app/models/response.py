@@ -1,7 +1,9 @@
-from typing import Optional, List
+from typing import List, Optional
+
 from app.models.core import BaseResponse
-from app.models.users import UserPublic
 from app.models.tweets import TweetPublic
+from app.models.users import UserPublic
+
 
 class UserResponse(BaseResponse):
     user: Optional[UserPublic]

@@ -1,9 +1,8 @@
 from fastapi import APIRouter
 
-from app.routes.users import router as users_routers
-from app.routes.tweets import router as tweets_routers
 from app.routes.media import router as media_routers
-
+from app.routes.tweets import router as tweets_routers
+from app.routes.users import router as users_routers
 
 router = APIRouter()
 

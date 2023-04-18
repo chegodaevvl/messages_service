@@ -1,16 +1,15 @@
 from typing import List
 
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy import delete
-
-from app.db.models import User, Follower
-from app.models.users import UserInDB, UserCreate, FollowerInfo, UserDetail
 from sqlalchemy.orm import selectinload
+
+from app.db.models import Follower, User
+from app.models.users import FollowerInfo, UserCreate, UserDetail, UserInDB
 
 
 class UserCRUD:
-
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
@@ -31,7 +30,11 @@ class UserCRUD:
         return UserInDB.from_orm(user)
 
     async def get_followers(self, user_id: int) -> List[UserDetail]:
-        select_stm = select(Follower).options(selectinload(Follower.follower)).where(Follower.following_id == user_id)
+        select_stm = (
+            select(Follower)
+            .options(selectinload(Follower.follower))
+            .where(Follower.following_id == user_id)
+        )
         query_result = await self.session.execute(select_stm)
         followers = query_result.scalars().all()
         result = list()
@@ -42,7 +45,11 @@ class UserCRUD:
         return result
 
     async def get_followings(self, user_id: int) -> List[UserDetail]:
-        select_stm = select(Follower).options(selectinload(Follower.following)).where(Follower.follower_id == user_id)
+        select_stm = (
+            select(Follower)
+            .options(selectinload(Follower.following))
+            .where(Follower.follower_id == user_id)
+        )
         query_result = await self.session.execute(select_stm)
         followers = query_result.scalars().all()
         result = list()
@@ -68,10 +75,10 @@ class UserCRUD:
         return new_user
 
     async def check_link(self, follow_link: Follower):
-        select_stm = select(Follower).where(
-            Follower.following_id == follow_link.following_id
-        ).where(
-            Follower.follower_id == follow_link.follower_id
+        select_stm = (
+            select(Follower)
+            .where(Follower.following_id == follow_link.following_id)
+            .where(Follower.follower_id == follow_link.follower_id)
         )
         result = await self.session.execute(select_stm)
         if not result.scalars().first():
@@ -88,10 +95,10 @@ class UserCRUD:
 
     async def remove_follower(self, follower: FollowerInfo) -> bool:
         follower = Follower(**follower.dict())
-        delete_stm = delete(Follower).where(
-            Follower.following_id == follower.following_id
-        ).where(
-            Follower.follower_id == follower.follower_id
+        delete_stm = (
+            delete(Follower)
+            .where(Follower.following_id == follower.following_id)
+            .where(Follower.follower_id == follower.follower_id)
         )
         await self.session.execute(delete_stm)
         await self.session.commit()
