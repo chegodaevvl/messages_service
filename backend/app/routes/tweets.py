@@ -1,15 +1,14 @@
 from os import path, remove
-from fastapi import APIRouter, Depends, Header, Request
-from fastapi import status
 
-from app.db.repositories.users import UserCRUD
-from app.db.repositories.tweets import TweetCRUD
-from app.db.repositories.media import MediaCRUD
-from app.db.dependencies import get_user_crud, get_tweet_crud, get_media_crud
-from app.models.response import TweetResponse
-from app.utils.error import create_error_response
+from fastapi import APIRouter, Depends, Header, Request, status
+
 from app.core.settings import settings
-
+from app.db.dependencies import get_media_crud, get_tweet_crud, get_user_crud
+from app.db.repositories.media import MediaCRUD
+from app.db.repositories.tweets import TweetCRUD
+from app.db.repositories.users import UserCRUD
+from app.models.response import TweetResponse, TweetsResponse
+from app.utils.error import create_error_response
 
 router = APIRouter()
 
@@ -19,23 +18,23 @@ tweet_crud = Depends(get_tweet_crud)
 media_crud = Depends(get_media_crud)
 
 
-@router.post("", response_model=TweetResponse,
-             response_model_exclude_unset=True,
-             name="tweets:create-tweet",
-             status_code=status.HTTP_200_OK)
+@router.post(
+    "",
+    response_model=TweetResponse,
+    response_model_exclude_unset=True,
+    name="tweets:create-tweet",
+    status_code=status.HTTP_200_OK,
+)
 async def create_tweet(
-        request: Request,
-        api_key: str = Header(default=None),
-        user_crud: UserCRUD = user_crud,
-        tweet_crud: TweetCRUD = tweet_crud,
-        media_crud: MediaCRUD = media_crud,
+    request: Request,
+    api_key: str = Header(default=None),
+    user_crud: UserCRUD = user_crud,
+    tweet_crud: TweetCRUD = tweet_crud,
+    media_crud: MediaCRUD = media_crud,
 ) -> TweetResponse:
     user = await user_crud.get_by_apikey(api_key)
     tweet_data = await request.json()
-    new_tweet = {
-        "tweet_data": tweet_data["tweet_data"],
-        "user_id": user.id
-    }
+    new_tweet = {"tweet_data": tweet_data["tweet_data"], "user_id": user.id}
     images_ids = None
     if "tweet_media_ids" in tweet_data:
         images_ids = tweet_data["tweet_media_ids"]
@@ -50,16 +49,19 @@ async def create_tweet(
     }
 
 
-@router.delete("/{id}", response_model=TweetResponse,
-               response_model_exclude_unset=True,
-               name="tweets:delete-tweet",
-               status_code=status.HTTP_200_OK)
+@router.delete(
+    "/{id}",
+    response_model=TweetResponse,
+    response_model_exclude_unset=True,
+    name="tweets:delete-tweet",
+    status_code=status.HTTP_200_OK,
+)
 async def delete_tweet(
-        id: int,
-        api_key: str = Header(default=None),
-        user_crud: UserCRUD = user_crud,
-        tweet_crud: TweetCRUD = tweet_crud,
-        media_crud: MediaCRUD = media_crud,
+    id: int,
+    api_key: str = Header(default=None),
+    user_crud: UserCRUD = user_crud,
+    tweet_crud: TweetCRUD = tweet_crud,
+    media_crud: MediaCRUD = media_crud,
 ) -> TweetResponse:
     user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
@@ -70,20 +72,54 @@ async def delete_tweet(
     result = await tweet_crud.delete_tweet(id)
     for image in images_list:
         remove(path.join(settings.MEDIA_PATH, image))
-    return {
-        "result": result
-    }
+    return {"result": result}
 
 
-@router.post("/{id}/likes", response_model=TweetResponse,
-             response_model_exclude_unset=True,
-             name="tweets:like-tweet",
-             status_code=status.HTTP_200_OK)
+@router.get(
+    "",
+    response_model=TweetsResponse,
+    response_model_exclude_unset=True,
+    name="tweets:get-tweets",
+    status_code=status.HTTP_200_OK,
+)
+async def get_tweets(
+    api_key: str = Header(default=None),
+    user_crud: UserCRUD = user_crud,
+    tweet_crud: TweetCRUD = tweet_crud,
+) -> TweetResponse:
+    user = await user_crud.get_by_apikey(api_key)
+    tweets_list = await tweet_crud.get_tweets(user.id)
+    tweets = list()
+    for tweet in tweets_list:
+        tweet_details = {
+            "id": tweet.id,
+            "content": tweet.tweet_data,
+            "attachments": list(),
+            "author": tweet.author,
+            "likes": list(),
+        }
+        for attachment in tweet.media:
+            tweet_details["attachments"].append(attachment.link)
+        for like in tweet.likes:
+            tweet_details["likes"].append(like.liker)
+        tweets.append(tweet_details)
+        print(tweet_details)
+    print(len(tweets))
+    return {"result": True, "tweets": tweets}
+
+
+@router.post(
+    "/{id}/likes",
+    response_model=TweetResponse,
+    response_model_exclude_unset=True,
+    name="tweets:like-tweet",
+    status_code=status.HTTP_200_OK,
+)
 async def like_tweet(
-        id: int,
-        api_key: str = Header(default=None),
-        user_crud: UserCRUD = user_crud,
-        tweet_crud: TweetCRUD = tweet_crud,
+    id: int,
+    api_key: str = Header(default=None),
+    user_crud: UserCRUD = user_crud,
+    tweet_crud: TweetCRUD = tweet_crud,
 ) -> TweetResponse:
     user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
@@ -95,20 +131,21 @@ async def like_tweet(
         "user_id": user.id,
     }
     result = await tweet_crud.like_tweet(tweet_like)
-    return {
-        "result": result
-    }
+    return {"result": result}
 
 
-@router.delete("/{id}/likes", response_model=TweetResponse,
-               response_model_exclude_unset=True,
-               name="tweets:unlike-tweet",
-               status_code=status.HTTP_200_OK)
+@router.delete(
+    "/{id}/likes",
+    response_model=TweetResponse,
+    response_model_exclude_unset=True,
+    name="tweets:unlike-tweet",
+    status_code=status.HTTP_200_OK,
+)
 async def unlike_tweet(
-        id: int,
-        api_key: str = Header(default=None),
-        user_crud: UserCRUD = user_crud,
-        tweet_crud: TweetCRUD = tweet_crud,
+    id: int,
+    api_key: str = Header(default=None),
+    user_crud: UserCRUD = user_crud,
+    tweet_crud: TweetCRUD = tweet_crud,
 ) -> TweetResponse:
     user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
@@ -122,6 +159,4 @@ async def unlike_tweet(
         "user_id": user.id,
     }
     result = await tweet_crud.unlike_tweet(tweet_like)
-    return {
-        "result": result
-    }
+    return {"result": result}

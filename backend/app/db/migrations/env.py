@@ -1,12 +1,12 @@
-import pathlib
-import os
-import sys
-import alembic
-from sqlalchemy import engine_from_config, pool, create_engine, text
-from psycopg2 import DatabaseError
-
-from logging.config import fileConfig
 import logging
+import os
+import pathlib
+import sys
+from logging.config import fileConfig
+
+import alembic
+from psycopg2 import DatabaseError
+from sqlalchemy import engine_from_config, pool
 
 # we're appending the app directory to our path here so that we can import config easily
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[3]))
@@ -18,6 +18,7 @@ config = alembic.context.config
 
 
 from app.db.models import Base
+
 target_metadata = Base.metadata
 
 # Interpret the config file for logging
@@ -44,8 +45,7 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         alembic.context.configure(
-            connection=connection,
-            target_metadata=target_metadata
+            connection=connection, target_metadata=target_metadata
         )
 
         with alembic.context.begin_transaction():
@@ -59,7 +59,9 @@ def run_migrations_offline() -> None:
     db_suffix = os.environ.get("DB_SUFFIX", "")
 
     if "test" in db_suffix:
-        raise DatabaseError("Running testing migrations offline currently not permitted.")
+        raise DatabaseError(
+            "Running testing migrations offline currently not permitted."
+        )
 
     alembic.context.configure(url=settings.DATABASE_URL)
 

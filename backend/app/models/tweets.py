@@ -1,4 +1,7 @@
+from typing import List
+
 from app.models.core import CoreModel, IDModelMixin
+from app.models.users import UserDetail
 
 
 class TweetBase(CoreModel):
@@ -19,3 +22,13 @@ class TweetInDB(IDModelMixin, TweetBase):
 class TweetLike(CoreModel):
     tweet_id: int
     user_id: int
+
+
+class TweetPublic(IDModelMixin):
+    content: str
+    attachments: List[str] = []
+    author: UserDetail
+    likes: List[UserDetail] = []
+
+    class Config:
+        orm_mode = True

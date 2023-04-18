@@ -1,5 +1,6 @@
 from os import path
 from sys import modules
+
 from pydantic import BaseSettings, Field
 
 
@@ -11,7 +12,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_SERVER: str
-    POSTGRES_PORT: str = Field(default='5432')
+    POSTGRES_PORT: str = Field(default="5432")
     POSTGRES_DB: str
 
     class Config:
@@ -20,9 +21,11 @@ class Settings(BaseSettings):
 
     @property
     def DATABASE_URL(self) -> str:
-        return f"postgresql+asyncpg://{self.POSTGRES_USER}:" \
-               f"{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:" \
-               f"{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        return (
+            f"postgresql+asyncpg://{self.POSTGRES_USER}:"
+            f"{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:"
+            f"{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        )
 
     @property
     def MEDIA_PATH(self) -> str:

@@ -1,4 +1,3 @@
-from os import environ
 from sys import modules
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
