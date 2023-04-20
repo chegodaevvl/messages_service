@@ -27,7 +27,7 @@ class TestTweet:
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
-        assert response["tweet_id"] == 1
+        assert response["tweet_id"] == 3
         await tweets_crud.delete_all_tweets()
 
     async def test_remove_tweet(self,

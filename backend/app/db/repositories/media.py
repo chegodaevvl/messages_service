@@ -23,11 +23,6 @@ class MediaCRUD:
         await self.session.commit()
         return MediaInDB.from_orm(new_media)
 
-    async def delete_images(self, tweet_id: int) -> None:
-        delete_stm = delete(Media).where(Media.tweet_id == tweet_id)
-        await self.session.execute(delete_stm)
-        await self.session.commit()
-
     async def link_images_to_tweet(self, tweet_id: int, media_ids: List[int]) -> None:
         update_stm = (
             update(Media).where(Media.id.in_(media_ids)).values(tweet_id=tweet_id)
