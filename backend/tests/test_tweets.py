@@ -5,9 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from httpx import AsyncClient
 
 from fastapi import status
+from sqlalchemy.future import select
+
 from app.db.repositories.media import MediaCRUD
 from app.db.repositories.tweets import TweetCRUD
 from app.core.settings import settings
+from app.db.models import Tweet
 
 
 pytestmark = pytest.mark.asyncio
@@ -15,10 +18,10 @@ pytestmark = pytest.mark.asyncio
 
 class TestTweet:
 
-    async def test_add_tweet(self,
-                             client: AsyncClient,
-                             db: AsyncSession,
-                             first_user) -> None:
+    async def test_create_tweet(self,
+                                client: AsyncClient,
+                                db: AsyncSession,
+                                first_user) -> None:
         tweets_crud = TweetCRUD(db)
         first_tweet = {
             "tweet_data": "Test tweet message"
@@ -32,12 +35,17 @@ class TestTweet:
 
     async def test_remove_tweet(self,
                                 client: AsyncClient,
+                                db: AsyncSession,
                                 first_user,
                                 first_tweet,) -> None:
         result = await client.delete(f"api/tweets/{first_tweet.id}", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"] is True
+        select_stm = select(Tweet).where(Tweet.id == first_tweet.id)
+        query_result = await db.execute(select_stm)
+        tweet = query_result.scalars().first()
+        assert not tweet
 
     async def test_remove_wrong_tweet(self,
                                       client: AsyncClient,
@@ -61,7 +69,7 @@ class TestTweet:
         assert response["error_type"] == "Not Authorized"
         assert response["error_message"] == "You are unable to delete tweet, created by another user!"
 
-    async def test_add_tweet_with_image(
+    async def test_create_tweet_with_image(
             self,
             db: AsyncSession,
             client: AsyncClient,
@@ -69,6 +77,17 @@ class TestTweet:
             test_media,
     ) -> None:
         media_crud = MediaCRUD(db)
+        images_ids = [test_media.id, test_media.id + 1000]
+        first_tweet = {
+            "tweet_data": "Test tweet message",
+            "tweet_media_ids": images_ids
+        }
+        result = await client.post("api/tweets", headers={"api-key": first_user.api_key}, json=first_tweet)
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert response["result"] is False
+        assert response["error_type"] == "Bad Request"
+        assert response["error_message"] == "Wrong number of the tweet images!"
         images_ids = [test_media.id]
         first_tweet = {
             "tweet_data": "Test tweet message",
