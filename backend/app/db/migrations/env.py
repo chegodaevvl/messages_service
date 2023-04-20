@@ -30,9 +30,8 @@ def run_migrations_online() -> None:
     """
     Run migrations in 'online' mode
     """
-    db_suffix = os.environ.get("DB_SUFFIX", "")
-    db_url = f"{settings.DATABASE_URL}{db_suffix}"
-    db_url = db_url.replace("+asyncpg", "")
+    # db_suffix = os.environ.get("DB_SUFFIX", "")
+    db_url = settings.DATABASE_URL.replace("+asyncpg", "")
     connectable = config.attributes.get("connection", None)
     config.set_main_option("sqlalchemy.url", str(db_url))
 

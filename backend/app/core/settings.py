@@ -9,11 +9,11 @@ class Settings(BaseSettings):
     PROJECT_VERSION: str = "0.0.1"
     API_PREFIX: str = "/api"
     SECRET_KEY: str = Field(default="Changeme")
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_SERVER: str
+    POSTGRES_USER: str = Field(default="Changeme")
+    POSTGRES_PASSWORD: str = Field(default="Changeme")
+    POSTGRES_SERVER: str = Field(default="Changeme")
     POSTGRES_PORT: str = Field(default="5432")
-    POSTGRES_DB: str
+    POSTGRES_DB: str = Field(default="Changeme")
 
     class Config:
         env_file = ".env"

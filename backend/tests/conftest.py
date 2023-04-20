@@ -1,9 +1,7 @@
-from os import environ
-from typing import List
 import pytest_asyncio
 from fastapi import FastAPI
 from httpx import AsyncClient
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import async_sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from alembic import command
@@ -21,7 +19,6 @@ from app.models.media import MediaCreate, MediaInDB
 
 @pytest_asyncio.fixture(scope="session")
 def apply_migrations():
-    environ["DB_SUFFIX"] = "_test"
     config = Config("alembic.ini")
     command.upgrade(config, "heads")
     yield
@@ -30,8 +27,8 @@ def apply_migrations():
 
 @pytest_asyncio.fixture(scope="function")
 async def db() -> AsyncSession:
-    async_session = sessionmaker(
-        async_engine, class_=AsyncSession, expire_on_commit=False
+    async_session = async_sessionmaker(
+        async_engine, expire_on_commit=False
     )
     async with async_session() as session:
         yield session

@@ -1,0 +1,12 @@
+# app
+fastapi
+uvicorn
+pydantic
+pydantic[dotenv]
+python-multipart
+
+# db
+SQLAlchemy
+alembic
+asyncpg
+psycopg2

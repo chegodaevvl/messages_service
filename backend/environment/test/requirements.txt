@@ -1,0 +1,25 @@
+# app
+fastapi
+uvicorn
+pydantic
+pydantic[dotenv]
+python-multipart
+
+# db
+SQLAlchemy
+alembic
+asyncpg
+psycopg2
+
+# test
+pytest
+pytest-asyncio
+pytest-xdist
+httpx
+pytest-cov
+
+# linters
+black
+isort
+flake8
+mypy

@@ -1,12 +1,12 @@
 version: "3.8"
 
 services:
-  db_server:
+  test_db_server:
     image: postgres
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - test_postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./backend/environment/main/.env
+      - ./backend/environment/test/.env
     ports:
       - 5432:5432
     healthcheck:
@@ -15,28 +15,28 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - main_env
+      - test_env
 
-  tweet_server:
+  test_tweet_server:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.test
     volumes:
       - ./backend/:/backend/
-    command: bash -c "alembic upgrade heads && uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 5000"
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 5500
     env_file:
-      - ./backend/environment/main/.env
+      - ./backend/environment/test/.env
     ports:
-      - 5000:5000
+      - 5500:5500
     depends_on:
-      db_server:
+      test_db_server:
         condition: service_healthy
     networks:
-      - main_env
+      - test_env
 
 volumes:
-    postgres_data:
+    test_postgres_data:
 
 networks:
-  main_env:
+  test_env:
     driver: bridge
