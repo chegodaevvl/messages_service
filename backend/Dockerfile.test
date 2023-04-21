@@ -19,6 +19,5 @@ RUN set -eux \
 COPY ./app /backend/app
 COPY ./tests /backend/tests
 COPY ./alembic.ini /backend/alembic.ini
-COPY ./apply_migrations.py /backend/apply_migrations.py
 COPY ./setup.cfg /backend/setup.cfg
 COPY ./environment/test/.env /backend/.env

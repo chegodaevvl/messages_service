@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     POSTGRES_DB: str = Field(default="Changeme")
 
     class Config:
-        env_file = ".env"
+        env_file = ".envexample"
         env_file_encoding = "utf-8"
 
     @property

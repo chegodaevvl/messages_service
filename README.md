@@ -1,5 +1,15 @@
 Backend для службы обмена короткими сообщениями
 
-docker compose -p tweets_main -f docker-compose.yml up -d --build
+# Порядок развертывания backend
+1. Клонировать репозиторий.
+2. Файл .envexample переименовать в файл .env
+3. Скопировать этот файл в папки environment\test и environment\main
+4. Отредактировать оба файла подставив в него актуальные данные для конфигурирования тестового и основного окружений
+5. Развертывание окружений:
+Для развертывания тестового окружения необходимо открыть терминал и выполнить команду:
 
-docker compose -p tweets_test -f docker-compose.test.yml up -d --build
+`docker compose -p tweets_test -f docker-compose.test.yml up -d --build`
+
+Для развертывания основного окружения необходимо открыть терминал и выполнить команду:
+
+`docker compose -p tweets_main -f docker-compose.yml up -d --build`
