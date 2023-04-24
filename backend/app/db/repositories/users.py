@@ -39,8 +39,6 @@ class UserCRUD:
         followers = query_result.scalars().all()
         result = list()
         for follower in followers:
-            print(follower.follower_id)
-            print(follower.following_id)
             result.append(UserDetail.from_orm(follower.follower))
         return result
 
@@ -54,9 +52,7 @@ class UserCRUD:
         followers = query_result.scalars().all()
         result = list()
         for follower in followers:
-            print(follower.following)
             result.append(UserDetail.from_orm(follower.following))
-        print(*result)
         return result
 
     async def get_by_name(self, user_name: str) -> User:

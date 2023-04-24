@@ -57,7 +57,7 @@ async def first_user(db) -> User:
 
     user_crud = UserCRUD(db)
     first_user = UserCreate(name="Chosen One",
-                           api_key="Superior")
+                            api_key="Superior")
     return await user_crud.add_user(first_user)
 
 
