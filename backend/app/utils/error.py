@@ -36,9 +36,7 @@ errors = {
 
 async def create_error_response(error_code: int) -> ErrorResponse:
     return ErrorResponse(
-        **{
-            "result": False,
-            "error_type": errors[error_code]["error_type"],
-            "error_message": errors[error_code]["error_message"],
-        }
+            result=False,
+            error_type=errors[error_code]["error_type"],
+            error_message=errors[error_code]["error_message"],
     )

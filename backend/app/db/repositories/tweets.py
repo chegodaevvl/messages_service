@@ -1,4 +1,4 @@
-from typing import List
+from typing import Sequence
 
 from sqlalchemy import delete, func
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,7 +14,8 @@ class TweetCRUD:
         self.session = session
 
     async def add_tweet(self, tweet: TweetCreate) -> TweetInDB:
-        new_tweet = Tweet(**tweet)
+        input_data = tweet.dict()
+        new_tweet = Tweet(**input_data)
         self.session.add(new_tweet)
         await self.session.commit()
         return TweetInDB.from_orm(new_tweet)
@@ -44,16 +45,17 @@ class TweetCRUD:
         return True
 
     async def like_tweet(self, tweet_like: TweetLike) -> bool:
-        tweet_like = Like(**tweet_like)
-        self.session.add(tweet_like)
+        input_data = tweet_like.dict()
+        like_tweet = Like(**input_data)
+        self.session.add(like_tweet)
         await self.session.commit()
         return True
 
     async def unlike_tweet(self, tweet_like: TweetLike) -> bool:
         delete_stm = (
             delete(Like)
-            .where(Like.tweet_id == tweet_like["tweet_id"])
-            .where(Like.user_id == tweet_like["user_id"])
+            .where(Like.tweet_id == tweet_like.tweet_id)
+            .where(Like.user_id == tweet_like.user_id)
         )
         await self.session.execute(delete_stm)
         await self.session.commit()
@@ -69,12 +71,12 @@ class TweetCRUD:
             return False
         return True
 
-    async def get_tweets(self, user_id: int) -> List:
+    async def get_tweets(self, user_id: int) -> Sequence[Tweet]:
         select_stm = (
             select(Tweet)
             .select_from(Like)
             .outerjoin(Tweet.likes)
-            .group_by(Tweet)
+            .group_by(Tweet.id)
             .order_by(func.count(Like.id).desc())
             .options(
                 selectinload(Tweet.media),

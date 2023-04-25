@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union, Optional
 
 from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,15 +13,15 @@ class UserCRUD:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def get_by_apikey(self, api_key: str) -> UserInDB:
+    async def get_by_apikey(self, api_key: str) -> Union[UserInDB, User]:
         select_stm = select(User).where(User.api_key == api_key)
         result = await self.session.execute(select_stm)
         user = result.scalars().first()
         if not user:
-            return user
+            return user                                                         # type: ignore
         return UserInDB.from_orm(user)
 
-    async def get_by_id(self, id: int) -> UserInDB:
+    async def get_by_id(self, id: int) -> Union[UserInDB, Optional[User]]:
         select_stm = select(User).where(User.id == id)
         query_result = await self.session.execute(select_stm)
         user = query_result.scalars().first()
@@ -55,7 +55,7 @@ class UserCRUD:
             result.append(UserDetail.from_orm(follower.following))
         return result
 
-    async def get_by_name(self, user_name: str) -> User:
+    async def get_by_name(self, user_name: str) -> Optional[User]:
         select_stm = select(User).where(User.name == user_name)
         result = await self.session.execute(select_stm)
         user = result.scalars().first()
@@ -82,7 +82,8 @@ class UserCRUD:
         return True
 
     async def add_follower(self, follower: FollowerInfo) -> bool:
-        new_follower = Follower(**follower.dict())
+        input_data = follower.dict()
+        new_follower = Follower(**input_data)
         if await self.check_link(new_follower):
             return False
         self.session.add(new_follower)
@@ -90,7 +91,8 @@ class UserCRUD:
         return True
 
     async def remove_follower(self, follower: FollowerInfo) -> bool:
-        follower = Follower(**follower.dict())
+        # input_data = follower.dict()
+        # follower = Follower(**input_data)
         delete_stm = (
             delete(Follower)
             .where(Follower.following_id == follower.following_id)
