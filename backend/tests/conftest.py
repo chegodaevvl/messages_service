@@ -74,10 +74,10 @@ async def second_user(db) -> User:
 async def first_tweet(db, first_user) -> TweetInDB:
 
     tweet_crud = TweetCRUD(db)
-    first_tweet = {
-        "tweet_data": "Test tweet text",
-        "user_id": first_user.id
-    }
+    first_tweet = TweetCreate(
+        tweet_data="Test tweet text",
+        user_id=first_user.id,
+    )
     yield await tweet_crud.add_tweet(first_tweet)
     await tweet_crud.delete_all_tweets()
 
@@ -86,10 +86,10 @@ async def first_tweet(db, first_user) -> TweetInDB:
 async def second_tweet(db, first_user) -> TweetInDB:
 
     tweet_crud = TweetCRUD(db)
-    second_tweet = {
-        "tweet_data": "This is a second tweet",
-        "user_id": first_user.id
-    }
+    second_tweet = TweetCreate(
+        tweet_data="This is a second tweet",
+        user_id=first_user.id,
+    )
     yield await tweet_crud.add_tweet(second_tweet)
     await tweet_crud.delete_all_tweets()
 
@@ -98,7 +98,7 @@ async def second_tweet(db, first_user) -> TweetInDB:
 async def test_media(db) -> MediaInDB:
 
     media_crud = MediaCRUD(db)
-    test_media = {
-        "link": "image.jpeg",
-    }
+    test_media = MediaCreate(
+        link="image.jpeg",
+    )
     return await media_crud.upload_image(test_media)

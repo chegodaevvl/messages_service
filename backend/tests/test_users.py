@@ -33,14 +33,14 @@ class TestGetUser:
         result = await client.get(f"api/users/me", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is True
+        assert response["result"]
         assert response["user"]["name"] == first_user.name
         await client.post(f"api/users/{second_user.id}/follow", headers={"api-key": first_user.api_key})
         await client.post(f"api/users/{first_user.id}/follow", headers={"api-key": second_user.api_key})
         result = await client.get(f"api/users/me", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is True
+        assert response["result"]
         assert response["user"]["name"] == first_user.name
         assert len(response["user"]["followers"]) == 1
         assert response["user"]["followers"][0]["name"] == second_user.name
@@ -59,7 +59,7 @@ class TestGetUser:
         result = await client.get(f"api/users/{first_user.id}", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is True
+        assert response["result"]
         assert response["user"]["name"] == first_user.name
 
     async def test_get_user_by_wrong_id(self,
@@ -72,7 +72,7 @@ class TestGetUser:
         result = await client.get(f"api/users/{first_user.id + 1000}", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is False
+        assert not response["result"]
         assert response["error_type"] == "Not Found"
         assert response["error_message"] == "No user found with such id!"
 
@@ -86,7 +86,7 @@ class TestGetUser:
         result = await client.post(f"api/users/{first_user.id}/follow", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is False
+        assert not response["result"]
         assert response["error_type"] == "Bad Request"
         assert response["error_message"] == "It is unable to perform such operation on your own account!"
 
@@ -101,15 +101,15 @@ class TestGetUser:
         result = await client.post(f"api/users/{second_user.id}/follow", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is True
+        assert response["result"]
         result = await client.post(f"api/users/{second_user.id}/follow", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is False
+        assert not response["result"]
         result = await client.get(f"api/users/{second_user.id}", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is True
+        assert response["result"]
         assert "followers" in response["user"]
         assert len(response["user"]["followers"]) == 1
         assert response["user"]["followers"][0]["id"] == first_user.id
@@ -117,7 +117,7 @@ class TestGetUser:
         result = await client.get(f"api/users/{first_user.id}", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is True
+        assert response["result"]
         assert "following" in response["user"]
         assert len(response["user"]["following"]) == 1
         assert response["user"]["following"][0]["id"] == second_user.id
@@ -134,7 +134,7 @@ class TestGetUser:
         result = await client.post(f"api/users/{second_user.id + 100}/follow", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is False
+        assert not response["result"]
         assert response["error_type"] == "Not Found"
         assert response["error_message"] == "No user found with such id!"
 
@@ -149,4 +149,4 @@ class TestGetUser:
         result = await client.delete(f"api/users/{second_user.id}/follow", headers={"api-key": first_user.api_key})
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is True
+        assert response["result"]

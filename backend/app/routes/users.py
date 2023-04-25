@@ -32,15 +32,8 @@ async def get_current_user(
         id=user.id,                                             # type: ignore
         name=user.name,                                         # type: ignore
         followers=followers,                                    # type: ignore
-        followings=followings,                                  # type: ignore
+        following=followings,                                  # type: ignore
     )
-    # user_detail.id = user.id
-    # user_detail.name = user.name
-    # # user_detail = {"id": user.id, "name": user.name}
-    # if followers:
-    #     user_detail.followers = followers                    # type: ignore
-    # if followings:
-    #     user_detail.followings = followings                   # type: ignore
     return UserResponse(
         result=True,
         user=user_detail,
@@ -69,10 +62,6 @@ async def get_user_by_id(
         followers=followers,
         following=followings,
     )
-    # if followers:
-    #     user_detail["followers"] = followers
-    # if followings:
-    #     user_detail["following"] = followings
     return UserResponse(
         result=True,
         user=user_detail

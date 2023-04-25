@@ -91,8 +91,6 @@ class UserCRUD:
         return True
 
     async def remove_follower(self, follower: FollowerInfo) -> bool:
-        # input_data = follower.dict()
-        # follower = Follower(**input_data)
         delete_stm = (
             delete(Follower)
             .where(Follower.following_id == follower.following_id)

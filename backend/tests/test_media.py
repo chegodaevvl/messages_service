@@ -21,7 +21,7 @@ class TestMedia:
         result = await client.post("api/media", headers={"api-key": first_user.api_key}, files=images)
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is True
+        assert response["result"]
         assert response["media_id"] == 1
         assert path.exists(path.join(settings.MEDIA_PATH, f"image{response['media_id']}.jpeg"))
         remove(path.join(settings.MEDIA_PATH, f"image{response['media_id']}.jpeg"))
@@ -36,6 +36,7 @@ class TestMedia:
         result = await client.post("api/media", headers={"api-key": first_user.api_key}, files=images)
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
-        assert response["result"] is False
+        print(response.keys())
+        assert not response["result"]
         assert response["error_type"] == "Bad Request"
         assert response["error_message"] == "Uploaded file is not an image!"

@@ -7,9 +7,7 @@ from httpx import AsyncClient
 
 from app.db.repositories.tweets import TweetCRUD
 from app.db.models import Tweet
-from app.models.users import UserCreate
-from app.models.users import FollowerInfo
-
+from app.models.tweets import TweetCreate, TweetLike
 
 pytestmark = pytest.mark.asyncio
 
@@ -22,10 +20,10 @@ class TestTweetCrud:
             db: AsyncSession
     ) -> None:
         tweet_crud = TweetCRUD(db)
-        new_tweet = {
-            "tweet_data": "Test crud text",
-            "user_id": first_user.id
-        }
+        new_tweet = TweetCreate(
+            tweet_data="Test crud text",
+            user_id=first_user.id
+        )
         result = await tweet_crud.add_tweet(new_tweet)
         assert result.id
         assert result.tweet_data == "Test crud text"
@@ -73,10 +71,10 @@ class TestTweetCrud:
             db: AsyncSession,
     ) -> None:
         tweet_crud = TweetCRUD(db)
-        new_like = {
-            "tweet_id": first_tweet.id,
-            "user_id": second_user.id,
-        }
+        new_like = TweetLike(
+            tweet_id=first_tweet.id,
+            user_id=second_user.id,
+        )
         result = await tweet_crud.like_tweet(new_like)
         assert result
 
@@ -102,10 +100,10 @@ class TestTweetCrud:
             db: AsyncSession,
     ) -> None:
         tweet_crud = TweetCRUD(db)
-        new_like = {
-            "tweet_id": first_tweet.id,
-            "user_id": second_user.id,
-        }
+        new_like = TweetLike(
+            tweet_id=first_tweet.id,
+            user_id=second_user.id,
+        )
         result = await tweet_crud.unlike_tweet(new_like)
         assert result
 
@@ -119,7 +117,9 @@ class TestTweetCrud:
             second_tweet,
     ) -> None:
         tweet_crud = TweetCRUD(db)
+        await client.post(f"api/users/{first_user.id}/follow", headers={"api-key": second_user.api_key})
         result = await tweet_crud.get_tweets(first_user.id)
         assert len(result) == 0
         result = await tweet_crud.get_tweets(second_user.id)
         assert len(result) == 2
+        await client.delete(f"api/users/{first_user.id}/follow", headers={"api-key": second_user.api_key})

@@ -37,7 +37,6 @@ async def create_tweet(
 ) -> Union[TweetResponse, ErrorResponse]:
     user = await user_crud.get_by_apikey(api_key)
     tweet_data = await request.json()
-    # new_tweet = {"tweet_data": tweet_data["tweet_data"], "user_id": user.id}
     new_tweet = TweetCreate(
         tweet_data=tweet_data["tweet_data"],
         user_id=user.id                                                                 # type: ignore
