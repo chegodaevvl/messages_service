@@ -91,7 +91,7 @@ async def follow_user(
     if following_user == followed_user:
         return await create_error_response(102)
     follower = FollowerInfo(
-        following_id=followed_user.id, follower_id=following_user.id                # type: ignore
+        following_id=followed_user.id, follower_id=following_user.id    # type: ignore
     )
     result = await user_crud.add_follower(follower)
     if not result:
@@ -123,7 +123,7 @@ async def unfollow_user(
     if following_user == followed_user:
         return await create_error_response(102)
     follower = FollowerInfo(
-        following_id=followed_user.id, follower_id=following_user.id                # type: ignore
+        following_id=followed_user.id, follower_id=following_user.id    # type: ignore
     )
     result = await user_crud.remove_follower(follower)
     if not result:
