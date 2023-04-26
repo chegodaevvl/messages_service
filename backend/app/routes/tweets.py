@@ -39,7 +39,7 @@ async def create_tweet(
     tweet_data = await request.json()
     new_tweet = TweetCreate(
         tweet_data=tweet_data["tweet_data"],
-        user_id=user.id                                                                 # type: ignore
+        user_id=user.id     # type: ignore
     )
     images_ids = None
     if "tweet_media_ids" in tweet_data:
@@ -74,7 +74,7 @@ async def delete_tweet(
     user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)
-    if not await tweet_crud.check_ownership(id, user.id):                           # type: ignore
+    if not await tweet_crud.check_ownership(id, user.id):   # type: ignore
         return await create_error_response(105)
     images_list = await media_crud.get_images_by_tweet(id)
     result = await tweet_crud.delete_tweet(id)
@@ -101,7 +101,7 @@ async def get_tweets(
     tweet_crud: TweetCRUD = tweet_crud,
 ) -> Union[TweetsResponse, ErrorResponse]:
     user = await user_crud.get_by_apikey(api_key)
-    tweets_list = await tweet_crud.get_tweets(user.id)                          # type: ignore
+    tweets_list = await tweet_crud.get_tweets(user.id)      # type: ignore
     tweets = list()
     for tweet in tweets_list:
         attachments = list()
@@ -111,8 +111,8 @@ async def get_tweets(
         for like in tweet.likes:
             likes.append(like.liker)
         tweet_details = TweetPublic(
-            id=tweet.id,                                                        # type: ignore
-            content=tweet.tweet_data,                                           # type: ignore
+            id=tweet.id,                # type: ignore
+            content=tweet.tweet_data,   # type: ignore
             attachments=attachments,
             author=tweet.author,
             likes=likes,
@@ -142,11 +142,11 @@ async def like_tweet(
     user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)
-    if await tweet_crud.check_ownership(id, user.id):                       # type: ignore
+    if await tweet_crud.check_ownership(id, user.id):   # type: ignore
         return await create_error_response(106)
     tweet_like = TweetLike(
         tweet_id=id,
-        user_id=user.id,                                                    # type: ignore
+        user_id=user.id,    # type: ignore
     )
     result = await tweet_crud.like_tweet(tweet_like)
     return TweetResponse(
@@ -173,13 +173,13 @@ async def unlike_tweet(
     user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)
-    if await tweet_crud.check_ownership(id, user.id):                               # type: ignore
+    if await tweet_crud.check_ownership(id, user.id):   # type: ignore
         return await create_error_response(106)
-    if not await tweet_crud.check_tweet_like(id, user.id):                          # type: ignore
+    if not await tweet_crud.check_tweet_like(id, user.id):  # type: ignore
         return await create_error_response(107)
     tweet_like = TweetLike(
         tweet_id=id,
-        user_id=user.id,                                                            # type: ignore
+        user_id=user.id,                                 # type: ignore
     )
     result = await tweet_crud.unlike_tweet(tweet_like)
     return TweetResponse(
