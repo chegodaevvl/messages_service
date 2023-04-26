@@ -4,8 +4,8 @@ import pathlib
 import sys
 from logging.config import fileConfig
 
-import alembic                                          # type: ignore
-from psycopg2 import DatabaseError                      # type: ignore
+import alembic  # type: ignore
+from psycopg2 import DatabaseError  # type: ignore
 from sqlalchemy import engine_from_config, pool
 
 # we're appending the app directory to our path here so that we can import config easily
@@ -22,7 +22,7 @@ from app.db.models import Base
 target_metadata = Base.metadata
 
 # Interpret the config file for logging
-fileConfig(config.config_file_name)                     # type: ignore
+fileConfig(config.config_file_name)  # type: ignore
 logger = logging.getLogger("alembic.env")
 
 
@@ -37,7 +37,7 @@ def run_migrations_online() -> None:
 
     if connectable is None:
         connectable = engine_from_config(
-            config.get_section(config.config_ini_section),              # type: ignore
+            config.get_section(config.config_ini_section),  # type: ignore
             prefix="sqlalchemy.",
             poolclass=pool.NullPool,
         )
