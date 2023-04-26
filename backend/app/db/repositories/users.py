@@ -18,7 +18,7 @@ class UserCRUD:
         result = await self.session.execute(select_stm)
         user = result.scalars().first()
         if not user:
-            return user                                                         # type: ignore
+            return user      # type: ignore
         return UserInDB.from_orm(user)
 
     async def get_by_id(self, id: int) -> Union[UserInDB, Optional[User]]:
