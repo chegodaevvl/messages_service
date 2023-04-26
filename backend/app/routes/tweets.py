@@ -52,6 +52,8 @@ async def create_tweet(
     return TweetResponse(
         result=True,
         tweet_id=tweet_created.id,
+        error_type=None,
+        error_message=None
     )
 
 
@@ -81,6 +83,8 @@ async def delete_tweet(
     return TweetResponse(
         result=result,
         tweet_id=0,
+        error_type=None,
+        error_message=None
     )
 
 
@@ -116,7 +120,9 @@ async def get_tweets(
         tweets.append(tweet_details)
     return TweetsResponse(
         result=True,
-        tweets=tweets
+        tweets=tweets,
+        error_type=None,
+        error_message=None
     )
 
 
@@ -145,7 +151,9 @@ async def like_tweet(
     result = await tweet_crud.like_tweet(tweet_like)
     return TweetResponse(
         result=result,
-        tweet_id=None
+        tweet_id=None,
+        error_type=None,
+        error_message=None
     )
 
 
@@ -177,4 +185,6 @@ async def unlike_tweet(
     return TweetResponse(
         result=result,
         tweet_id=None,
+        error_type=None,
+        error_message=None
     )
