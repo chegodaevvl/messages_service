@@ -37,6 +37,8 @@ async def get_current_user(
     return UserResponse(
         result=True,
         user=user_detail,
+        error_type=None,
+        error_message=None
     )
 
 
@@ -64,7 +66,9 @@ async def get_user_by_id(
     )
     return UserResponse(
         result=True,
-        user=user_detail
+        user=user_detail,
+        error_type=None,
+        error_message=None
     )
 
 
@@ -94,7 +98,9 @@ async def follow_user(
         return await create_error_response(103)
     return UserResponse(
         result=True,
-        user=None
+        user=None,
+        error_type=None,
+        error_message=None
     )
 
 
@@ -124,5 +130,7 @@ async def unfollow_user(
         return await create_error_response(103)
     return UserResponse(
         result=True,
-        user=None
+        user=None,
+        error_type=None,
+        error_message=None
     )
