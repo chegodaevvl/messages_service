@@ -28,10 +28,10 @@ async def upload_media(
     image: UploadFile,
     media_crud: MediaCRUD = media_crud,
 ) -> Union[MediaResponse, ErrorResponse]:
-    if "image" not in image.content_type:
+    if "image" not in image.content_type:                               # type: ignore
         return await create_error_response(108)
     new_media = MediaCreate(
-        link=image.filename
+        link=image.filename                                             # type: ignore
     )
     media_uploaded = await media_crud.upload_image(new_media)
     if not path.exists(settings.MEDIA_PATH):
@@ -42,5 +42,7 @@ async def upload_media(
         uploaded_image.write(image.file.read())
     return MediaResponse(
         result=True,
-        media_id=media_uploaded.id
+        media_id=media_uploaded.id,
+        error_type=None,
+        error_message=None
     )
