@@ -28,6 +28,12 @@ async def upload_media(
     image: UploadFile,
     media_crud: MediaCRUD = media_crud,
 ) -> Union[MediaResponse, ErrorResponse]:
+    """
+    Маршрут для загрузки изображения
+    :param image: файл для загрузки
+    :param media_crud: CRUD для работы с изображениями
+    :return: Информация о выполнении операции
+    """
     if "image" not in image.content_type:
         return await create_error_response(108)
     new_media = MediaCreate(

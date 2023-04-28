@@ -10,6 +10,10 @@ async_engine = create_async_engine(db_url, echo=True)
 
 
 async def get_async_session() -> AsyncSession:  # type: ignore
+    """
+    Функция инициализации сессии
+    :return: AsyncSession - инициализированная сессия
+    """
     async_session = async_sessionmaker(
         bind=async_engine, class_=AsyncSession, expire_on_commit=False
     )

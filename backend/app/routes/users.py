@@ -25,6 +25,13 @@ async def get_current_user(
     api_key: str = Header(default=None),
     user_crud: UserCRUD = user_crud,
 ) -> UserResponse:
+    """
+    Маршрут получения информации о текущем пользователе
+    :param api_key: str - api_key для доступа к api
+    :param user_crud: CRUD операции для пользователя
+    :return: Ответ с результатом выполнения операции (информация о пользователе,
+             информация об ошибке)
+    """
     user = await user_crud.get_by_apikey(api_key)
     followers = await user_crud.get_followers(user.id)          # type: ignore
     followings = await user_crud.get_followings(user.id)        # type: ignore
@@ -49,8 +56,17 @@ async def get_current_user(
 )
 async def get_user_by_id(
     id: int,
+    api_key: str = Header(default=None),
     user_crud: UserCRUD = user_crud,
 ) -> Union[UserResponse, ErrorResponse]:
+    """
+    Маршрут для получения информации о пользователе по id
+    :param id: int - id пользователя
+    :param api_key: str - api_key для доступа к api
+    :param user_crud: CRUD операции для пользователя
+    :return: Ответ с результатом выполнения операции (информация о пользователе,
+             информация об ошибке)
+    """
     user = await user_crud.get_by_id(id)
     if not user:
         return await create_error_response(101)
@@ -80,6 +96,13 @@ async def follow_user(
     api_key: str = Header(default=None),
     user_crud: UserCRUD = user_crud,
 ) -> Union[UserResponse, ErrorResponse]:
+    """
+    Маршрут для старта отслеживания пользователя
+    :param id: int - id пользователя
+    :param api_key: str - api_key для доступа к api
+    :param user_crud: CRUD операции для пользователя
+    :return: Ответ с результатом выполнения операции
+    """
     following_user = await user_crud.get_by_apikey(api_key)
     followed_user = await user_crud.get_by_id(id)
     if not followed_user:
@@ -110,6 +133,13 @@ async def unfollow_user(
     api_key: str = Header(default=None),
     user_crud: UserCRUD = user_crud,
 ) -> Union[UserResponse, ErrorResponse]:
+    """
+    Маршрут для прекращения отслеживания пользователя
+    :param id: int - id пользователя
+    :param api_key: str - api_key для доступа к api
+    :param user_crud: CRUD операции для пользователя
+    :return: Ответ с результатом выполнения операции
+    """
     following_user = await user_crud.get_by_apikey(api_key)
     followed_user = await user_crud.get_by_id(id)
     if not followed_user:

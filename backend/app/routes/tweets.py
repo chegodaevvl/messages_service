@@ -35,6 +35,15 @@ async def create_tweet(
     tweet_crud: TweetCRUD = tweet_crud,
     media_crud: MediaCRUD = media_crud,
 ) -> Union[TweetResponse, ErrorResponse]:
+    """
+    Маршрут для создания твита
+    :param request: Request - полученный запрос
+    :param api_key: str - API_key для доступа к маршруту
+    :param user_crud: CRUD операции для пользователя
+    :param tweet_crud: CRUD операции для твита
+    :param media_crud: CRUD операции для изображения
+    :return: Ответ с результатом выполнения операции
+    """
     user = await user_crud.get_by_apikey(api_key)
     tweet_data = await request.json()
     new_tweet = TweetCreate(
@@ -69,6 +78,15 @@ async def delete_tweet(
     tweet_crud: TweetCRUD = tweet_crud,
     media_crud: MediaCRUD = media_crud,
 ) -> Union[TweetResponse, ErrorResponse]:
+    """
+    Маршрут для удаления твита
+    :param id: int - id твита
+    :param api_key: str - api-key для доступа к маршруту
+    :param user_crud: CRUD операции для пользователя
+    :param tweet_crud: CRUD операции для твита
+    :param media_crud: CRUD операции для изображения
+    :return: Ответ с результатом выполнения операции
+    """
     user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)
@@ -96,6 +114,13 @@ async def get_tweets(
     user_crud: UserCRUD = user_crud,
     tweet_crud: TweetCRUD = tweet_crud,
 ) -> Union[TweetsResponse, ErrorResponse]:
+    """
+    Маршрут для получения списка твитов
+    :param api_key: api-key для доступа к маршруту
+    :param user_crud: CRUD операции для пользователя
+    :param tweet_crud: CRUD операции для твита
+    :return: Ответ с результатом выполнения операции (список твитов или информация об ошибке)
+    """
     user = await user_crud.get_by_apikey(api_key)
     tweets_list = await tweet_crud.get_tweets(user.id)                          # type: ignore
     tweets = list()
@@ -133,6 +158,14 @@ async def like_tweet(
     user_crud: UserCRUD = user_crud,
     tweet_crud: TweetCRUD = tweet_crud,
 ) -> Union[TweetResponse, ErrorResponse]:
+    """
+    Маршрут для проставления лайка на твит
+    :param id: int - id лайка
+    :param api_key: str - api-key для доступа к маршруту
+    :param user_crud: CRUD операции для пользователя
+    :param tweet_crud: CRUD операции для твита
+    :return: Ответ с результатом выполнения операции
+    """
     user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)
@@ -162,6 +195,14 @@ async def unlike_tweet(
     user_crud: UserCRUD = user_crud,
     tweet_crud: TweetCRUD = tweet_crud,
 ) -> Union[TweetResponse, ErrorResponse]:
+    """
+    Маршурт удаления отметки лайк с твита
+    :param id: int - id твита
+    :param api_key: str - api-key для доступа к маршруту
+    :param user_crud: CRUD операции для пользователя
+    :param tweet_crud: CRUD операции для твита
+    :return: Ответ с результатом выполнения операции
+    """
     user = await user_crud.get_by_apikey(api_key)
     if not await tweet_crud.check_by_id(id):
         return await create_error_response(104)

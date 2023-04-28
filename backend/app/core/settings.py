@@ -21,6 +21,11 @@ class Settings(BaseSettings):
 
     @property
     def DATABASE_URL(self) -> str:
+        """
+        Настраиваемое свойство для формирования строки подключения
+        к БД.
+        :return: str - строка подключения к БД
+        """
         return (
             f"postgresql+asyncpg://{self.POSTGRES_USER}:"
             f"{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:"
@@ -29,6 +34,11 @@ class Settings(BaseSettings):
 
     @property
     def MEDIA_PATH(self) -> str:
+        """
+        Настраиваемое свойство для задания места хранения
+        загружаемых файлов
+        :return: str - путь до папки хранения файлов
+        """
         if "pytest" in modules:
             return path.join("tests", "img")
         return "img"
