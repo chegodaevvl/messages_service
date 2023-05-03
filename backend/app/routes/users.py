@@ -1,10 +1,11 @@
 from typing import Union
+
 from fastapi import APIRouter, Depends, Header, status
 
 from app.db.dependencies import get_user_crud
 from app.db.repositories.users import UserCRUD
-from app.models.response import UserResponse
 from app.models.error import ErrorResponse
+from app.models.response import UserResponse
 from app.models.users import FollowerInfo, UserPublic
 from app.utils.error import create_error_response
 

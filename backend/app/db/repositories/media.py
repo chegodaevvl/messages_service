@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from sqlalchemy import func, update, Column
+from sqlalchemy import Column, func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 

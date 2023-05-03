@@ -1,4 +1,4 @@
-from typing import List, Union, Optional
+from typing import List, Optional, Union
 
 from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession

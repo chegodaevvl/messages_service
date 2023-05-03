@@ -2,7 +2,6 @@ from os import path, remove
 from typing import Union
 
 from fastapi import APIRouter, Depends, Header, Request, status
-
 from pydantic import ValidationError
 
 from app.core.settings import settings
@@ -10,9 +9,10 @@ from app.db.dependencies import get_media_crud, get_tweet_crud, get_user_crud
 from app.db.repositories.media import MediaCRUD
 from app.db.repositories.tweets import TweetCRUD
 from app.db.repositories.users import UserCRUD
-from app.models.response import TweetResponse, TweetsResponse
 from app.models.error import ErrorResponse
-from app.models.tweets import TweetCreate, TweetPublic, TweetLike, TweetImagesID
+from app.models.response import TweetResponse, TweetsResponse
+from app.models.tweets import (TweetCreate, TweetImagesID, TweetLike,
+                               TweetPublic)
 from app.utils.error import create_error_response
 
 router = APIRouter()
