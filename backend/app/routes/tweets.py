@@ -128,7 +128,8 @@ async def get_tweets(
     :param api_key: api-key для доступа к маршруту
     :param user_crud: CRUD операции для пользователя
     :param tweet_crud: CRUD операции для твита
-    :return: Ответ с результатом выполнения операции (список твитов или информация об ошибке)
+    :return: Ответ с результатом выполнения операции
+    (список твитов или информация об ошибке)
     """
     user = await user_crud.get_by_apikey(api_key)
     tweets_list = await tweet_crud.get_tweets(user.id)  # type: ignore
