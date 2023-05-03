@@ -10,6 +10,7 @@ class User(Base):
     """
     Модель, описывающая пользователя
     """
+
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
@@ -20,6 +21,7 @@ class Media(Base):
     """
     Модель, описывающая загружаемое изображение
     """
+
     __tablename__ = "media"
     id = Column(Integer, primary_key=True, index=True)
     link = Column(String)
@@ -30,6 +32,7 @@ class Follower(Base):
     """
     Модель, описывающая отслеживание пользователей друг друга
     """
+
     __tablename__ = "followers"
     id = Column(Integer, primary_key=True, index=True)
     following_id = Column(Integer, ForeignKey("users.id"))
@@ -42,6 +45,7 @@ class Tweet(Base):
     """
     Модель твитов
     """
+
     __tablename__ = "tweets"
     id = Column(Integer, primary_key=True, index=True)
     tweet_data = Column(String, nullable=False)
@@ -55,6 +59,7 @@ class Like(Base):
     """
     Модель лайков
     """
+
     __tablename__ = "likes"
     id = Column(Integer, primary_key=True, index=True)
     tweet_id = Column(Integer, ForeignKey("tweets.id", ondelete="CASCADE"))

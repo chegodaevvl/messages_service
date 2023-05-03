@@ -33,13 +33,13 @@ async def get_current_user(
              информация об ошибке)
     """
     user = await user_crud.get_by_apikey(api_key)
-    followers = await user_crud.get_followers(user.id)          # type: ignore
-    followings = await user_crud.get_followings(user.id)        # type: ignore
+    followers = await user_crud.get_followers(user.id)  # type: ignore
+    followings = await user_crud.get_followings(user.id)  # type: ignore
     user_detail = UserPublic(
-        id=user.id,                                             # type: ignore
-        name=user.name,                                         # type: ignore
-        followers=followers,                                    # type: ignore
-        following=followings,                                  # type: ignore
+        id=user.id,  # type: ignore
+        name=user.name,  # type: ignore
+        followers=followers,  # type: ignore
+        following=followings,  # type: ignore
     )
     return UserResponse(
         result=True,
@@ -70,18 +70,15 @@ async def get_user_by_id(
     user = await user_crud.get_by_id(id)
     if not user:
         return await create_error_response(101)
-    followers = await user_crud.get_followers(user.id)                      # type: ignore
-    followings = await user_crud.get_followings(user.id)                    # type: ignore
+    followers = await user_crud.get_followers(user.id)  # type: ignore
+    followings = await user_crud.get_followings(user.id)  # type: ignore
     user_detail = UserPublic(
-        id=user.id,                                                         # type: ignore
-        name=user.name,                                                     # type: ignore
+        id=user.id,  # type: ignore
+        name=user.name,  # type: ignore
         followers=followers,
         following=followings,
     )
-    return UserResponse(
-        result=True,
-        user=user_detail
-    )
+    return UserResponse(result=True, user=user_detail)
 
 
 @router.post(
@@ -110,15 +107,12 @@ async def follow_user(
     if following_user == followed_user:
         return await create_error_response(102)
     follower = FollowerInfo(
-        following_id=followed_user.id, follower_id=following_user.id                # type: ignore
+        following_id=followed_user.id, follower_id=following_user.id  # type: ignore
     )
     result = await user_crud.add_follower(follower)
     if not result:
         return await create_error_response(103)
-    return UserResponse(
-        result=True,
-        user=None
-    )
+    return UserResponse(result=True, user=None)
 
 
 @router.delete(
@@ -147,12 +141,9 @@ async def unfollow_user(
     if following_user == followed_user:
         return await create_error_response(102)
     follower = FollowerInfo(
-        following_id=followed_user.id, follower_id=following_user.id                # type: ignore
+        following_id=followed_user.id, follower_id=following_user.id  # type: ignore
     )
     result = await user_crud.remove_follower(follower)
     if not result:
         return await create_error_response(103)
-    return UserResponse(
-        result=True,
-        user=None
-    )
+    return UserResponse(result=True, user=None)

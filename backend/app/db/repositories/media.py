@@ -12,6 +12,7 @@ class MediaCRUD:
     """
     Класс, описывающий CRUD действия с объектом Media
     """
+
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
@@ -25,8 +26,8 @@ class MediaCRUD:
         new_media = Media(**input_data)
         self.session.add(new_media)
         await self.session.commit()
-        dot_idx = new_media.link.rfind(".")         # type: ignore
-        new_media.link = f"image{new_media.id}"     # type: ignore
+        dot_idx = new_media.link.rfind(".")  # type: ignore
+        new_media.link = f"image{new_media.id}"  # type: ignore
         if dot_idx != -1:
             new_media.link += media.link[dot_idx:]  # type: ignore
         await self.session.commit()

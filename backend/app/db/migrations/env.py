@@ -4,8 +4,8 @@ import pathlib
 import sys
 from logging.config import fileConfig
 
-import alembic                                          # type: ignore
-from psycopg2 import DatabaseError                      # type: ignore
+import alembic  # type: ignore
+from psycopg2 import DatabaseError  # type: ignore
 from sqlalchemy import engine_from_config, pool
 
 # we're appending the app directory to our path here so that we can import config easily

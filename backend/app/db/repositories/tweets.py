@@ -13,6 +13,7 @@ class TweetCRUD:
     """
     Класс, описывающий CRUD действия с объектом Tweet
     """
+
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
