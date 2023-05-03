@@ -1,10 +1,12 @@
-# from typing import Annotated
+from typing import Union
+
 from fastapi import APIRouter, Depends, Header, status
 
 from app.db.dependencies import get_user_crud
 from app.db.repositories.users import UserCRUD
+from app.models.error import ErrorResponse
 from app.models.response import UserResponse
-from app.models.users import FollowerInfo
+from app.models.users import FollowerInfo, UserPublic
 from app.utils.error import create_error_response
 
 router = APIRouter()
@@ -24,15 +26,28 @@ async def get_current_user(
     api_key: str = Header(default=None),
     user_crud: UserCRUD = user_crud,
 ) -> UserResponse:
+    """
+    Маршрут получения информации о текущем пользователе
+    :param api_key: str - api_key для доступа к api
+    :param user_crud: CRUD операции для пользователя
+    :return: Ответ с результатом выполнения операции (информация о пользователе,
+             информация об ошибке)
+    """
     user = await user_crud.get_by_apikey(api_key)
-    user_detail = {"id": user.id, "name": user.name}
-    followers = await user_crud.get_followers(user.id)
-    followings = await user_crud.get_followings(user.id)
-    if followers:
-        user_detail["followers"] = followers
-    if followings:
-        user_detail["following"] = followings
-    return {"result": True, "user": user_detail}
+    followers = await user_crud.get_followers(user.id)  # type: ignore
+    followings = await user_crud.get_followings(user.id)  # type: ignore
+    user_detail = UserPublic(
+        id=user.id,  # type: ignore
+        name=user.name,  # type: ignore
+        followers=followers,  # type: ignore
+        following=followings,  # type: ignore
+    )
+    return UserResponse(
+        result=True,
+        user=user_detail,
+        error_type=None,
+        error_message=None,
+    )
 
 
 @router.get(
@@ -44,19 +59,34 @@ async def get_current_user(
 )
 async def get_user_by_id(
     id: int,
+    api_key: str = Header(default=None),
     user_crud: UserCRUD = user_crud,
-) -> UserResponse:
+) -> Union[UserResponse, ErrorResponse]:
+    """
+    Маршрут для получения информации о пользователе по id
+    :param id: int - id пользователя
+    :param api_key: str - api_key для доступа к api
+    :param user_crud: CRUD операции для пользователя
+    :return: Ответ с результатом выполнения операции (информация о пользователе,
+             информация об ошибке)
+    """
     user = await user_crud.get_by_id(id)
     if not user:
         return await create_error_response(101)
-    user_detail = {"id": user.id, "name": user.name}
-    followers = await user_crud.get_followers(user.id)
-    followings = await user_crud.get_followings(user.id)
-    if followers:
-        user_detail["followers"] = followers
-    if followings:
-        user_detail["following"] = followings
-    return {"result": True, "user": user_detail}
+    followers = await user_crud.get_followers(user.id)  # type: ignore
+    followings = await user_crud.get_followings(user.id)  # type: ignore
+    user_detail = UserPublic(
+        id=user.id,  # type: ignore
+        name=user.name,  # type: ignore
+        followers=followers,
+        following=followings,
+    )
+    return UserResponse(
+        result=True,
+        user=user_detail,
+        error_type=None,
+        error_message=None,
+    )
 
 
 @router.post(
@@ -70,7 +100,14 @@ async def follow_user(
     id: int,
     api_key: str = Header(default=None),
     user_crud: UserCRUD = user_crud,
-) -> UserResponse:
+) -> Union[UserResponse, ErrorResponse]:
+    """
+    Маршрут для старта отслеживания пользователя
+    :param id: int - id пользователя
+    :param api_key: str - api_key для доступа к api
+    :param user_crud: CRUD операции для пользователя
+    :return: Ответ с результатом выполнения операции
+    """
     following_user = await user_crud.get_by_apikey(api_key)
     followed_user = await user_crud.get_by_id(id)
     if not followed_user:
@@ -78,14 +115,17 @@ async def follow_user(
     if following_user == followed_user:
         return await create_error_response(102)
     follower = FollowerInfo(
-        following_id=followed_user.id, follower_id=following_user.id
+        following_id=followed_user.id, follower_id=following_user.id  # type: ignore
     )
     result = await user_crud.add_follower(follower)
     if not result:
         return await create_error_response(103)
-    return {
-        "result": True,
-    }
+    return UserResponse(
+        result=True,
+        user=None,
+        error_type=None,
+        error_message=None,
+    )
 
 
 @router.delete(
@@ -99,7 +139,14 @@ async def unfollow_user(
     id: int,
     api_key: str = Header(default=None),
     user_crud: UserCRUD = user_crud,
-) -> UserResponse:
+) -> Union[UserResponse, ErrorResponse]:
+    """
+    Маршрут для прекращения отслеживания пользователя
+    :param id: int - id пользователя
+    :param api_key: str - api_key для доступа к api
+    :param user_crud: CRUD операции для пользователя
+    :return: Ответ с результатом выполнения операции
+    """
     following_user = await user_crud.get_by_apikey(api_key)
     followed_user = await user_crud.get_by_id(id)
     if not followed_user:
@@ -107,11 +154,14 @@ async def unfollow_user(
     if following_user == followed_user:
         return await create_error_response(102)
     follower = FollowerInfo(
-        following_id=followed_user.id, follower_id=following_user.id
+        following_id=followed_user.id, follower_id=following_user.id  # type: ignore
     )
     result = await user_crud.remove_follower(follower)
     if not result:
         return await create_error_response(103)
-    return {
-        "result": True,
-    }
+    return UserResponse(
+        result=True,
+        user=None,
+        error_type=None,
+        error_message=None,
+    )
