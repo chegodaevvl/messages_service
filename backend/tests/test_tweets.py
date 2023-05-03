@@ -51,7 +51,7 @@ class TestTweet:
         response = result.json()
         assert not response["result"]
         assert response["error_type"] == "Bad Request"
-        assert response["error_message"] == "Schema validation error! Wrong data type!"
+        assert response["error_message"] == "Schema validation error! Not a list of int provided!"
         wrong_tweet = {
             "tweet_data": "Tweet text",
             "tweet_media_ids": [1, "a", 0.7]
@@ -61,7 +61,7 @@ class TestTweet:
         response = result.json()
         assert not response["result"]
         assert response["error_type"] == "Bad Request"
-        assert response["error_message"] == "Schema validation error! Wrong data type!"
+        assert response["error_message"] == "Schema validation error! Not a list of int provided!"
 
     async def test_remove_tweet(self,
                                 client: AsyncClient,

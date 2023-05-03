@@ -60,3 +60,15 @@ class TestErrorMsg:
         assert not result.result
         assert result.error_type == "Bad Request"
         assert result.error_message == "Wrong number of the tweet images!"
+
+    async def test_110_error(self):
+        result = await create_error_response(110)
+        assert not result.result
+        assert result.error_type == "Bad Request"
+        assert result.error_message == "Schema validation error! Not a list of int provided!"
+
+    async def test_111_error(self):
+        result = await create_error_response(111)
+        assert not result.result
+        assert result.error_type == "Bad Request"
+        assert result.error_message == "Schema validation error! Not a string data provided!"

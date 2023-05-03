@@ -70,6 +70,8 @@ async def create_tweet(
     return TweetResponse(
         result=True,
         tweet_id=tweet_created.id,
+        error_type=None,
+        error_message=None,
     )
 
 
@@ -108,6 +110,8 @@ async def delete_tweet(
     return TweetResponse(
         result=result,
         tweet_id=0,
+        error_type=None,
+        error_message=None,
     )
 
 
@@ -149,7 +153,12 @@ async def get_tweets(
             likes=likes,
         )
         tweets.append(tweet_details)
-    return TweetsResponse(result=True, tweets=tweets)
+    return TweetsResponse(
+        result=True,
+        tweets=tweets,
+        error_type=None,
+        error_message=None,
+    )
 
 
 @router.post(
@@ -183,7 +192,12 @@ async def like_tweet(
         user_id=user.id,  # type: ignore
     )
     result = await tweet_crud.like_tweet(tweet_like)
-    return TweetResponse(result=result, tweet_id=None)
+    return TweetResponse(
+        result=result,
+        tweet_id=None,
+        error_type=None,
+        error_message=None,
+    )
 
 
 @router.delete(
@@ -222,4 +236,6 @@ async def unlike_tweet(
     return TweetResponse(
         result=result,
         tweet_id=None,
+        error_type=None,
+        error_message=None,
     )

@@ -45,6 +45,8 @@ async def get_current_user(
     return UserResponse(
         result=True,
         user=user_detail,
+        error_type=None,
+        error_message=None,
     )
 
 
@@ -79,7 +81,12 @@ async def get_user_by_id(
         followers=followers,
         following=followings,
     )
-    return UserResponse(result=True, user=user_detail)
+    return UserResponse(
+        result=True,
+        user=user_detail,
+        error_type=None,
+        error_message=None,
+    )
 
 
 @router.post(
@@ -113,7 +120,12 @@ async def follow_user(
     result = await user_crud.add_follower(follower)
     if not result:
         return await create_error_response(103)
-    return UserResponse(result=True, user=None)
+    return UserResponse(
+        result=True,
+        user=None,
+        error_type=None,
+        error_message=None,
+    )
 
 
 @router.delete(
@@ -147,4 +159,9 @@ async def unfollow_user(
     result = await user_crud.remove_follower(follower)
     if not result:
         return await create_error_response(103)
-    return UserResponse(result=True, user=None)
+    return UserResponse(
+        result=True,
+        user=None,
+        error_type=None,
+        error_message=None,
+    )

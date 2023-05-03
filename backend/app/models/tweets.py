@@ -59,4 +59,4 @@ class TweetImagesID(CoreModel):
     Модель проверки перечня id изображений
     """
 
-    tweet_images_id: Optional[List[int]]
+    tweet_images_id: List[int]

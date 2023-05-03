@@ -55,7 +55,7 @@ class MediaCRUD:
         query_result = await self.session.execute(select_stm)
         images_list = list()
         for item in query_result.scalars().all():
-            images_list.append(item.link)
+            images_list.append(str(item.link))
         return images_list
 
     async def check_images_exist(self, media_ids: List[int]) -> bool:

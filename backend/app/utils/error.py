@@ -33,7 +33,7 @@ errors = {
     },
     110: {
         "error_type": "Bad Request",
-        "error_message": "Schema validation error! Wrong data type!",
+        "error_message": "Schema validation error! Not a list of int provided!",
     },
     111: {
         "error_type": "Bad Request",
