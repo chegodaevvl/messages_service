@@ -3,6 +3,8 @@ from typing import Union
 
 from fastapi import APIRouter, Depends, Header, Request, status
 
+from pydantic import ValidationError
+
 from app.core.settings import settings
 from app.db.dependencies import get_media_crud, get_tweet_crud, get_user_crud
 from app.db.repositories.media import MediaCRUD
@@ -10,7 +12,7 @@ from app.db.repositories.tweets import TweetCRUD
 from app.db.repositories.users import UserCRUD
 from app.models.response import TweetResponse, TweetsResponse
 from app.models.error import ErrorResponse
-from app.models.tweets import TweetCreate, TweetPublic, TweetLike
+from app.models.tweets import TweetCreate, TweetPublic, TweetLike, TweetImagesID
 from app.utils.error import create_error_response
 
 router = APIRouter()
@@ -48,16 +50,21 @@ async def create_tweet(
     tweet_data = await request.json()
     new_tweet = TweetCreate(
         tweet_data=tweet_data["tweet_data"],
-        user_id=user.id                                                                 # type: ignore
+        user_id=user.id                                                     # type: ignore
     )
     images_ids = None
     if "tweet_media_ids" in tweet_data:
-        images_ids = tweet_data["tweet_media_ids"]
-        if not await media_crud.check_images_exist(images_ids):
+        try:
+            images_ids = TweetImagesID(
+                tweet_images_id=tweet_data["tweet_media_ids"]
+            )
+        except ValidationError:
+            return await create_error_response(110)
+        if not await media_crud.check_images_exist(images_ids.tweet_images_id):
             return await create_error_response(109)
     tweet_created = await tweet_crud.add_tweet(new_tweet)
     if images_ids:
-        await media_crud.link_images_to_tweet(tweet_created.id, images_ids)
+        await media_crud.link_images_to_tweet(tweet_created.id, images_ids.tweet_images_id)
     return TweetResponse(
         result=True,
         tweet_id=tweet_created.id,

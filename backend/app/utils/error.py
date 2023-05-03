@@ -31,6 +31,10 @@ errors = {
         "error_type": "Bad Request",
         "error_message": "Wrong number of the tweet images!",
     },
+    110: {
+        "error_type": "Bad Request",
+        "error_message": "Schema validation error! Wrong data type!",
+    },
 }
 
 

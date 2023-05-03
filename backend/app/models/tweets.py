@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from app.models.core import CoreModel, IDModelMixin
 from app.models.users import UserDetail
@@ -47,3 +47,10 @@ class TweetPublic(IDModelMixin):
 
     class Config:
         orm_mode = True
+
+
+class TweetImagesID(CoreModel):
+    """
+    Модель проверки перечня id изображений
+    """
+    tweet_images_id: Optional[List[int]]
