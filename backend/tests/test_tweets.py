@@ -33,6 +33,35 @@ class TestTweet:
         assert response["result"]
         assert response["tweet_id"] == 3
         await tweets_crud.delete_all_tweets()
+        wrong_tweet = {
+            "tweet_data": ["Tweet text", 1, 34.9],
+        }
+        result = await client.post("api/tweets", headers={"api-key": first_user.api_key}, json=wrong_tweet)
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert not response["result"]
+        assert response["error_type"] == "Bad Request"
+        assert response["error_message"] == "Schema validation error! Not a string data provided!"
+        wrong_tweet = {
+            "tweet_data": "Tweet text",
+            "tweet_media_ids": 12345987
+        }
+        result = await client.post("api/tweets", headers={"api-key": first_user.api_key}, json=wrong_tweet)
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert not response["result"]
+        assert response["error_type"] == "Bad Request"
+        assert response["error_message"] == "Schema validation error! Wrong data type!"
+        wrong_tweet = {
+            "tweet_data": "Tweet text",
+            "tweet_media_ids": [1, "a", 0.7]
+        }
+        result = await client.post("api/tweets", headers={"api-key": first_user.api_key}, json=wrong_tweet)
+        assert result.status_code == status.HTTP_200_OK
+        response = result.json()
+        assert not response["result"]
+        assert response["error_type"] == "Bad Request"
+        assert response["error_message"] == "Schema validation error! Wrong data type!"
 
     async def test_remove_tweet(self,
                                 client: AsyncClient,

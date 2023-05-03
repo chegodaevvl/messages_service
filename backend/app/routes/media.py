@@ -28,9 +28,15 @@ async def upload_media(
     image: UploadFile,
     media_crud: MediaCRUD = media_crud,
 ) -> Union[MediaResponse, ErrorResponse]:
-    if "image" not in image.content_type:  # type: ignore
+    """
+    Маршрут для загрузки изображения
+    :param image: файл для загрузки
+    :param media_crud: CRUD для работы с изображениями
+    :return: Информация о выполнении операции
+    """
+    if "image" not in image.content_type:
         return await create_error_response(108)
-    new_media = MediaCreate(link=image.filename)  # type: ignore
+    new_media = MediaCreate(link=image.filename)
     media_uploaded = await media_crud.upload_image(new_media)
     if not path.exists(settings.MEDIA_PATH):
         makedirs(settings.MEDIA_PATH)
@@ -38,6 +44,4 @@ async def upload_media(
         path.join(settings.MEDIA_PATH, media_uploaded.link), "wb"
     ) as uploaded_image:
         uploaded_image.write(image.file.read())
-    return MediaResponse(
-        result=True, media_id=media_uploaded.id, error_type=None, error_message=None
-    )
+    return MediaResponse(result=True, media_id=media_uploaded.id)

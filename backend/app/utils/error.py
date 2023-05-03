@@ -31,10 +31,23 @@ errors = {
         "error_type": "Bad Request",
         "error_message": "Wrong number of the tweet images!",
     },
+    110: {
+        "error_type": "Bad Request",
+        "error_message": "Schema validation error! Wrong data type!",
+    },
+    111: {
+        "error_type": "Bad Request",
+        "error_message": "Schema validation error! Not a string data provided!",
+    },
 }
 
 
 async def create_error_response(error_code: int) -> ErrorResponse:
+    """
+    Функция вывода информации об ошибке по ее коду
+    :param error_code: int - код ошибки
+    :return: Ответ об ошибке выполнения операции
+    """
     return ErrorResponse(
         result=False,
         error_type=errors[error_code]["error_type"],
