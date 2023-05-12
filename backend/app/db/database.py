@@ -1,10 +1,14 @@
+from sys import modules
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
                                     create_async_engine)
 
 from app.core.settings import settings
 
-db_url = settings.DATABASE_URL
-
+# db_url = settings.DATABASE_URL
+if "pytest" in modules:
+    db_url = f"""{settings.DATABASE_URL}_test"""
+else:
+    db_url = settings.DATABASE_URL
 
 async_engine = create_async_engine(db_url, echo=True)
 

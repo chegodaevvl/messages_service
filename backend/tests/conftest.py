@@ -1,3 +1,4 @@
+from os import environ
 import pytest_asyncio
 from fastapi import FastAPI
 from httpx import AsyncClient
@@ -19,14 +20,16 @@ from app.models.media import MediaCreate, MediaInDB
 
 @pytest_asyncio.fixture(scope="session")
 def apply_migrations():
+    environ["DB_SUFFIX"] = "_test"
     config = Config("alembic.ini")
     command.upgrade(config, "heads")
     yield
-    command.downgrade(config, "base")
+    # command.downgrade(config, "base")
 
 
 @pytest_asyncio.fixture(scope="function")
 async def db() -> AsyncSession:
+    environ["DB_SUFFIX"] = "_test"
     async_session = async_sessionmaker(
         async_engine, expire_on_commit=False
     )
@@ -39,7 +42,7 @@ async def db() -> AsyncSession:
 async def async_app(apply_migrations) -> FastAPI:
 
     from app.main import create_app
-
+    environ["DB_SUFFIX"] = "_test"
     return create_app()
 
 

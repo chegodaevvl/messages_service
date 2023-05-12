@@ -4,6 +4,7 @@ uvicorn
 pydantic
 pydantic[dotenv]
 python-multipart
+aiosqlite
 
 # db
 SQLAlchemy
@@ -17,3 +18,9 @@ pytest-asyncio
 pytest-xdist
 httpx
 pytest-cov
+
+# linters
+black
+isort
+flake8
+mypy

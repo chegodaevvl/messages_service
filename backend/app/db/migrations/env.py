@@ -6,7 +6,7 @@ from logging.config import fileConfig
 
 import alembic  # type: ignore
 from psycopg2 import DatabaseError  # type: ignore
-from sqlalchemy import engine_from_config, pool
+from sqlalchemy import engine_from_config, pool, create_engine
 
 # we're appending the app directory to our path here so that we can import config easily
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[3]))
@@ -30,8 +30,21 @@ def run_migrations_online() -> None:
     """
     Run migrations in 'online' mode
     """
-    # db_suffix = os.environ.get("DB_SUFFIX", "")
+    db_suffix = os.environ.get("DB_SUFFIX", "")
+    # db_url = f"{settings.DATABASE_URL}{db_suffix}"
     db_url = settings.DATABASE_URL.replace("+asyncpg", "")
+    if db_suffix:
+        local_engine = create_engine(db_url)
+        with local_engine.connect() as local_connection:
+            local_connection.exec_driver_sql("ROLLBACK")
+            local_connection.exec_driver_sql(
+                f"DROP DATABASE IF EXISTS {settings.POSTGRES_DB}{db_suffix}"
+            )
+            local_connection.exec_driver_sql(
+                f"CREATE DATABASE {settings.POSTGRES_DB}{db_suffix}"
+            )
+        db_url += db_suffix
+    # db_url = settings.DATABASE_URL.replace("+asyncpg", "")
     connectable = config.attributes.get("connection", None)
     config.set_main_option("sqlalchemy.url", str(db_url))
 
