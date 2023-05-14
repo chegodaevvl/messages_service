@@ -84,5 +84,6 @@ class MediaCRUD:
             .select_from(Media)
             .where(Media.tweet_id == tweet_id)
         )
+        print(select_stm)
         query_result = await self.session.execute(select_stm)
         return query_result.scalars().first()

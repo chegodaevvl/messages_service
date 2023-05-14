@@ -10,17 +10,17 @@ pytestmark = pytest.mark.asyncio
 
 class TestGetUser:
 
-    # async def test_users_wrong_apikey(self,
-    #                                   client: AsyncClient,
-    #                                   first_user) -> None:
-    #     result = await client.get("api/users/me")
-    #     assert result.status_code == status.HTTP_403_FORBIDDEN
-    #     result = await client.get("api/users/me", headers={"api-key": "WrongAPIKey"})
-    #     assert result.status_code == status.HTTP_403_FORBIDDEN
-    #     result = await client.get("api/users/me", headers={"api-key": "WrongAPIKey"})
-    #     assert result.status_code == status.HTTP_403_FORBIDDEN
-    #     result = await client.get("api/users/me", headers={"api-key": "WrongAPIKey"})
-    #     assert result.status_code == status.HTTP_403_FORBIDDEN
+    async def test_users_wrong_apikey(self,
+                                      client: AsyncClient,
+                                      first_user) -> None:
+        result = await client.get("api/users/me")
+        assert result.status_code == status.HTTP_403_FORBIDDEN
+        result = await client.get("api/users/me", headers={"api-key": "WrongAPIKey"})
+        assert result.status_code == status.HTTP_403_FORBIDDEN
+        result = await client.get("api/users/me", headers={"api-key": "WrongAPIKey"})
+        assert result.status_code == status.HTTP_403_FORBIDDEN
+        result = await client.get("api/users/me", headers={"api-key": "WrongAPIKey"})
+        assert result.status_code == status.HTTP_403_FORBIDDEN
 
     async def test_get_current_user(self,
                                     client: AsyncClient,
