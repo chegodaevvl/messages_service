@@ -6,7 +6,7 @@ from logging.config import fileConfig
 
 import alembic  # type: ignore
 from psycopg2 import DatabaseError  # type: ignore
-from sqlalchemy import engine_from_config, pool, create_engine
+from sqlalchemy import engine_from_config, pool
 
 # we're appending the app directory to our path here so that we can import config easily
 sys.path.append(str(pathlib.Path(__file__).resolve().parents[3]))
