@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from app.models.core import CoreModel, IDModelMixin
 from app.models.users import UserDetail

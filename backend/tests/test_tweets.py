@@ -11,7 +11,6 @@ from app.db.repositories.media import MediaCRUD
 from app.db.repositories.tweets import TweetCRUD
 from app.core.settings import settings
 from app.db.models import Tweet
-from app.models.tweets import TweetCreate
 
 
 pytestmark = pytest.mark.asyncio
@@ -229,13 +228,13 @@ class TestTweet:
         assert not path.exists(path.join(settings.MEDIA_PATH, f"image{media_id}.jpeg"))
 
     async def test_get_tweets(self,
-                        client: AsyncClient,
-                        db: AsyncSession,
-                        first_tweet,
-                        second_tweet,
-                        first_user,
-                        second_user,
-                        test_media):
+                              client: AsyncClient,
+                              db: AsyncSession,
+                              first_tweet,
+                              second_tweet,
+                              first_user,
+                              second_user,
+                              test_media):
         media_crud = MediaCRUD(db)
         await client.post(f"api/users/{first_user.id}/follow", headers={"api-key": second_user.api_key})
         await client.post(f"api/tweets/{second_tweet.id}/likes", headers={"api-key": second_user.api_key})
