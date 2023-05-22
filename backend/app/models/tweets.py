@@ -14,7 +14,7 @@ class TweetBase(CoreModel):
 
 class TweetCreate(TweetBase):
     """
-    Модель сохдания твита
+    Модель создания твита
     """
 
     user_id: int

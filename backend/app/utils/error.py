@@ -39,6 +39,10 @@ errors = {
         "error_type": "Bad Request",
         "error_message": "Schema validation error! Not a string data provided!",
     },
+    112: {
+        "error_type": "Bad Request",
+        "error_message": "You already like this tweet!",
+    },
 }
 
 
