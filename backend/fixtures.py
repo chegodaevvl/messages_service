@@ -3,14 +3,14 @@ from typing import List
 from random import randint
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_async_engine
 
-# from app.db.database import async_engine
+from app.db.database import async_engine
 from app.db.repositories.users import UserCRUD
 from app.db.repositories.tweets import TweetCRUD
 from app.models.users import UserCreate, UserInDB, FollowerInfo
 from app.models.tweets import TweetCreate, TweetInDB, TweetLike
 
-db_url = "postgresql+asyncpg://tweets_svr:tweets_pwd@db_server:5432/tweets_db"
-async_engine = create_async_engine(db_url)
+# db_url = "postgresql+asyncpg://tweets_svr:tweets_pwd@db_server:5432/tweets_db"
+# async_engine = create_async_engine(db_url)
 async_session = async_sessionmaker(
     bind=async_engine, class_=AsyncSession, expire_on_commit=False
 )
@@ -103,4 +103,5 @@ async def generate_data() -> None:
     await create_like_tweet(users, tweets)
 
 
-run(generate_data())
+if __name__ == "__main__":
+    run(generate_data())

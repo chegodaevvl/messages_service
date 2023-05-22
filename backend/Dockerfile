@@ -5,7 +5,7 @@ WORKDIR /backend
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONBUFFERED 1
 
-COPY ./requirements.txt /backend/requirements.txt
+COPY ./environment/prod/requirements.txt /backend/requirements.txt
 
 RUN set -eux \
   && apk add --no-cache --virtual .build-deps build-base \
@@ -16,4 +16,5 @@ RUN set -eux \
   && pip install -r /backend/requirements.txt \
   && rm -rf /root/.cache/pip
 
-COPY . /backend
+COPY ./app /backend/app
+COPY ./alembic.ini /backend/alembic.ini
