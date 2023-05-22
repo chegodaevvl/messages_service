@@ -17,7 +17,7 @@ services:
     networks:
       - main_env
 
-  tweet_server:
+  tweet_api:
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -31,6 +31,19 @@ services:
     depends_on:
       db_server:
         condition: service_healthy
+    networks:
+      - main_env
+
+  tweet_web:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./nginx/:/ngnix/
+    ports:
+      - 80:80
+    depends_on:
+      - tweet_api
     networks:
       - main_env
 

@@ -103,11 +103,14 @@ class TweetCRUD:
         :param user_id: int - id пользователя
         :return: bool - результат проверки
         """
+        print(tweet_id)
+        print(user_id)
         select_stm = (
             select(Like).where(Like.tweet_id == tweet_id).where(Like.user_id == user_id)
         )
         query_result = await self.session.execute(select_stm)
         like = query_result.scalars().first()
+        print(like)
         if not like:
             return False
         return True
