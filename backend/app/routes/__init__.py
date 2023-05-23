@@ -8,4 +8,4 @@ router = APIRouter()
 
 router.include_router(users_routers, prefix="/users", tags=["users"])
 router.include_router(tweets_routers, prefix="/tweets", tags=["tweets"])
-router.include_router(media_routers, prefix="/media", tags=["media"])
+router.include_router(media_routers, prefix="/medias", tags=["media"])

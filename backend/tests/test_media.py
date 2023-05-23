@@ -16,9 +16,9 @@ class TestMedia:
                                 first_user) -> None:
         path_to_file = "tests/image.jpeg"
         images = {
-            "image": open(path_to_file, "rb")
+            "file": open(path_to_file, "rb")
         }
-        result = await client.post("api/media", headers={"api-key": first_user.api_key}, files=images)
+        result = await client.post("api/medias", headers={"api-key": first_user.api_key}, files=images)
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         assert response["result"]
@@ -31,9 +31,9 @@ class TestMedia:
                                       first_user) -> None:
         path_to_file = "tests/text.txt"
         images = {
-            "image": open(path_to_file, "rb")
+            "file": open(path_to_file, "rb")
         }
-        result = await client.post("api/media", headers={"api-key": first_user.api_key}, files=images)
+        result = await client.post("api/medias", headers={"api-key": first_user.api_key}, files=images)
         assert result.status_code == status.HTTP_200_OK
         response = result.json()
         print(response.keys())

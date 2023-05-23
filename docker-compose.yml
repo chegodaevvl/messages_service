@@ -6,7 +6,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./backend/.env
+      - ./backend/environment/prod/.env
     ports:
       - 5432:5432
     healthcheck:
@@ -15,7 +15,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - main_env
+      - prod_network
 
   tweet_api:
     build:
@@ -25,14 +25,14 @@ services:
       - ./backend/:/backend/
     command: bash -c "alembic upgrade heads && uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 5000"
     env_file:
-      - ./backend/.env
+      - ./backend/environment/prod/.env
     ports:
       - 5000:5000
     depends_on:
       db_server:
         condition: service_healthy
     networks:
-      - main_env
+      - prod_network
 
   tweet_web:
     build:
@@ -45,11 +45,11 @@ services:
     depends_on:
       - tweet_api
     networks:
-      - main_env
+      - prod_network
 
 volumes:
     postgres_data:
 
 networks:
-  main_env:
+  prod_network:
     driver: bridge

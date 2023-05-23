@@ -16,8 +16,4 @@ RUN set -eux \
   && pip install -r /backend/requirements.txt \
   && rm -rf /root/.cache/pip
 
-COPY ./app /backend/app
-COPY ./tests /backend/tests
-COPY ./alembic.ini /backend/alembic.ini
-COPY ./setup.cfg /backend/setup.cfg
-COPY ./environment/test/.env /backend/.env
+COPY . /backend
