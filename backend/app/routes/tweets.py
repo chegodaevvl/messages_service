@@ -187,8 +187,6 @@ async def like_tweet(
         return await create_error_response(104)
     if await tweet_crud.check_ownership(id, user.id):  # type: ignore
         return await create_error_response(106)
-    print(id)
-    print(user.id)
     if await tweet_crud.check_tweet_like(id, user.id):  # type: ignore
         return await create_error_response(112)
     tweet_like = TweetLike(

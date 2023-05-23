@@ -1,7 +1,7 @@
 from os import makedirs, path
 from typing import Union
 
-from fastapi import APIRouter, Depends, UploadFile, status
+from fastapi import APIRouter, Depends, UploadFile, status, Request, Form
 
 from app.core.settings import settings
 from app.db.dependencies import get_media_crud
@@ -21,11 +21,13 @@ media_crud = Depends(get_media_crud)
     "",
     response_model=MediaResponse,
     response_model_exclude_unset=True,
-    name="media:add-media",
+    name="medias:add-media",
     status_code=status.HTTP_200_OK,
 )
 async def upload_media(
-    image: UploadFile,
+    file: UploadFile,
+    request: Request,
+    # file = Form(),
     media_crud: MediaCRUD = media_crud,
 ) -> Union[MediaResponse, ErrorResponse]:
     """
@@ -34,16 +36,16 @@ async def upload_media(
     :param media_crud: CRUD для работы с изображениями
     :return: Информация о выполнении операции
     """
-    if "image" not in str(image.content_type):
+    if "image" not in str(file.content_type):
         return await create_error_response(108)
-    new_media = MediaCreate(link=str(image.filename))
+    new_media = MediaCreate(link=str(file.filename))
     media_uploaded = await media_crud.upload_image(new_media)
     if not path.exists(settings.MEDIA_PATH):
         makedirs(settings.MEDIA_PATH)
     with open(
         path.join(settings.MEDIA_PATH, media_uploaded.link), "wb"
     ) as uploaded_image:
-        uploaded_image.write(image.file.read())
+        uploaded_image.write(file.file.read())
     return MediaResponse(
         result=True,
         media_id=media_uploaded.id,
