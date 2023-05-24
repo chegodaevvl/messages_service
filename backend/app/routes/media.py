@@ -26,8 +26,6 @@ media_crud = Depends(get_media_crud)
 )
 async def upload_media(
     file: UploadFile,
-    request: Request,
-    # file = Form(),
     media_crud: MediaCRUD = media_crud,
 ) -> Union[MediaResponse, ErrorResponse]:
     """
