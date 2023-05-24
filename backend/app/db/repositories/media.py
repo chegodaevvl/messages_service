@@ -1,9 +1,11 @@
+from os import path
 from typing import List, Optional
 
 from sqlalchemy import func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from app.core.settings import settings
 from app.db.models import Media
 from app.models.media import MediaCreate, MediaInDB
 
@@ -27,9 +29,10 @@ class MediaCRUD:
         self.session.add(new_media)
         await self.session.commit()
         dot_idx = new_media.link.rfind(".")  # type: ignore
-        new_media.link = f"image{new_media.id}"  # type: ignore
+        image_name = f"image{new_media.id}"
         if dot_idx != -1:
-            new_media.link += media.link[dot_idx:]  # type: ignore
+            image_name += media.link[dot_idx:]  # type: ignore
+        new_media.link = path.join(settings.MEDIA_PATH, image_name)  # type: ignore
         await self.session.commit()
         return MediaInDB.from_orm(new_media)
 

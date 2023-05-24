@@ -3,6 +3,7 @@ import pytest
 from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.settings import settings
 from app.db.repositories.media import MediaCRUD
 from app.db.models import Media
 from app.models.media import MediaCreate
@@ -22,12 +23,12 @@ class TestMediaCRUD:
             link="test_image.jpg"
         )
         media_uploaded = await media_crud.upload_image(new_media)
-        assert media_uploaded.link == f"image{media_uploaded.id}.jpg"
+        assert media_uploaded.link == f"{settings.MEDIA_PATH}/image{media_uploaded.id}.jpg"
         new_media = MediaCreate(
             link="test_image"
         )
         media_uploaded = await media_crud.upload_image(new_media)
-        assert media_uploaded.link == f"image{media_uploaded.id}"
+        assert media_uploaded.link == f"{settings.MEDIA_PATH}/image{media_uploaded.id}"
         delete_stm = delete(Media)
         await db.execute(delete_stm)
         await db.commit()
