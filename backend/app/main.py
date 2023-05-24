@@ -18,7 +18,7 @@ def create_app() -> FastAPI:
     app.mount(
         f"/{settings.MEDIA_PATH}",
         StaticFiles(directory=settings.MEDIA_PATH),
-        name="images"
+        name="images",
     )
     return app
 

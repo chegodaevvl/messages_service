@@ -1,10 +1,9 @@
-from os import path, remove
+from os import remove
 from typing import Union
 
 from fastapi import APIRouter, Depends, Header, Request, status
 from pydantic import ValidationError
 
-from app.core.settings import settings
 from app.db.dependencies import get_media_crud, get_tweet_crud, get_user_crud
 from app.db.repositories.media import MediaCRUD
 from app.db.repositories.tweets import TweetCRUD
@@ -106,7 +105,7 @@ async def delete_tweet(
     images_list = await media_crud.get_images_by_tweet(id)
     result = await tweet_crud.delete_tweet(id)
     for image in images_list:
-        remove(path.join(settings.MEDIA_PATH, image))
+        remove(image)
     return TweetResponse(
         result=result,
         tweet_id=0,

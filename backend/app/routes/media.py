@@ -1,7 +1,7 @@
 from os import makedirs, path
 from typing import Union
 
-from fastapi import APIRouter, Depends, UploadFile, status, Request, Form
+from fastapi import APIRouter, Depends, UploadFile, status
 
 from app.core.settings import settings
 from app.db.dependencies import get_media_crud
@@ -40,9 +40,7 @@ async def upload_media(
     media_uploaded = await media_crud.upload_image(new_media)
     if not path.exists(settings.MEDIA_PATH):
         makedirs(settings.MEDIA_PATH)
-    with open(
-        path.join(settings.MEDIA_PATH, media_uploaded.link), "wb"
-    ) as uploaded_image:
+    with open(media_uploaded.link, "wb") as uploaded_image:
         uploaded_image.write(file.file.read())
     return MediaResponse(
         result=True,
