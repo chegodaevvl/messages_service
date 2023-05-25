@@ -1,4 +1,4 @@
-from app.models.core import CoreModel, IDModelMixin
+from app.schemas.core import CoreModel, IDModelMixin
 
 
 class MediaBase(CoreModel):

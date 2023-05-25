@@ -7,7 +7,7 @@ from sqlalchemy.future import select
 
 from app.core.settings import settings
 from app.db.models import Media
-from app.models.media import MediaCreate, MediaInDB
+from app.schemas.media import MediaCreate, MediaInDB
 
 
 class MediaCRUD:

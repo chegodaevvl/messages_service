@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.settings import settings
 from app.db.repositories.media import MediaCRUD
 from app.db.models import Media
-from app.models.media import MediaCreate
+from app.schemas.media import MediaCreate
 
 
 pytestmark = pytest.mark.asyncio

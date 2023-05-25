@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_asyn
 from app.db.database import async_engine
 from app.db.repositories.users import UserCRUD
 from app.db.repositories.tweets import TweetCRUD
-from app.models.users import UserCreate, UserInDB, FollowerInfo
-from app.models.tweets import TweetCreate, TweetInDB, TweetLike
+from app.schemas.users import UserCreate, UserInDB, FollowerInfo
+from app.schemas.tweets import TweetCreate, TweetInDB, TweetLike
 
 # db_url = "postgresql+asyncpg://tweets_svr:tweets_pwd@db_server:5432/tweets_db"
 # async_engine = create_async_engine(db_url)

@@ -18,9 +18,9 @@ from app.db.repositories.users import UserCRUD
 from app.db.repositories.tweets import TweetCRUD
 from app.db.repositories.media import MediaCRUD
 from app.db.models import User
-from app.models.users import UserCreate, UserInDB
-from app.models.tweets import TweetCreate, TweetInDB
-from app.models.media import MediaCreate, MediaInDB
+from app.schemas.users import UserCreate, UserInDB
+from app.schemas.tweets import TweetCreate, TweetInDB
+from app.schemas.media import MediaCreate, MediaInDB
 
 
 test_db_url = f"{settings.DATABASE_URL}_test"

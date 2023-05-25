@@ -8,10 +8,12 @@ from app.db.dependencies import get_media_crud, get_tweet_crud, get_user_crud
 from app.db.repositories.media import MediaCRUD
 from app.db.repositories.tweets import TweetCRUD
 from app.db.repositories.users import UserCRUD
-from app.models.error import ErrorResponse
-from app.models.response import TweetResponse, TweetsResponse
-from app.models.tweets import (TweetCreate, TweetImagesID, TweetLike,
+from app.schemas.error import ErrorResponse
+from app.schemas.response import TweetResponse, TweetsResponse
+from app.schemas.tweets import (TweetCreate, TweetImagesID, TweetLike,
                                TweetPublic)
+from app.schemas.response import UserResponse
+from app.schemas.users import FollowerInfo
 from app.utils.error import create_error_response
 
 router = APIRouter()
@@ -237,6 +239,84 @@ async def unlike_tweet(
     return TweetResponse(
         result=result,
         tweet_id=None,
+        error_type=None,
+        error_message=None,
+    )
+
+
+@router.post(
+    "/{id}/follow",
+    response_model=UserResponse,
+    response_model_exclude_unset=True,
+    name="users:user_follow",
+    status_code=status.HTTP_200_OK,
+)
+async def follow_user(
+    id: int,
+    api_key: str = Header(default=None),
+    user_crud: UserCRUD = user_crud,
+) -> Union[UserResponse, ErrorResponse]:
+    """
+    Маршрут для старта отслеживания пользователя
+    :param id: int - id пользователя
+    :param api_key: str - api_key для доступа к api
+    :param user_crud: CRUD операции для пользователя
+    :return: Ответ с результатом выполнения операции
+    """
+    following_user = await user_crud.get_by_apikey(api_key)
+    followed_user = await user_crud.get_by_id(id)
+    if not followed_user:
+        return await create_error_response(101)
+    if following_user == followed_user:
+        return await create_error_response(102)
+    follower = FollowerInfo(
+        following_id=followed_user.id, follower_id=following_user.id  # type: ignore
+    )
+    result = await user_crud.add_follower(follower)
+    if not result:
+        return await create_error_response(103)
+    return UserResponse(
+        result=True,
+        user=None,
+        error_type=None,
+        error_message=None,
+    )
+
+
+@router.delete(
+    "/{id}/follow",
+    response_model=UserResponse,
+    response_model_exclude_unset=True,
+    name="users:user_unfollow",
+    status_code=status.HTTP_200_OK,
+)
+async def unfollow_user(
+    id: int,
+    api_key: str = Header(default=None),
+    user_crud: UserCRUD = user_crud,
+) -> Union[UserResponse, ErrorResponse]:
+    """
+    Маршрут для прекращения отслеживания пользователя
+    :param id: int - id пользователя
+    :param api_key: str - api_key для доступа к api
+    :param user_crud: CRUD операции для пользователя
+    :return: Ответ с результатом выполнения операции
+    """
+    following_user = await user_crud.get_by_apikey(api_key)
+    followed_user = await user_crud.get_by_id(id)
+    if not followed_user:
+        return await create_error_response(101)
+    if following_user == followed_user:
+        return await create_error_response(102)
+    follower = FollowerInfo(
+        following_id=followed_user.id, follower_id=following_user.id  # type: ignore
+    )
+    result = await user_crud.remove_follower(follower)
+    if not result:
+        return await create_error_response(103)
+    return UserResponse(
+        result=True,
+        user=None,
         error_type=None,
         error_message=None,
     )

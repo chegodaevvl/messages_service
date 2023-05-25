@@ -5,8 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.repositories.users import UserCRUD
 from app.db.models import User
-from app.models.users import UserCreate
-from app.models.users import FollowerInfo
+from app.schemas.users import UserCreate, FollowerInfo
 
 
 pytestmark = pytest.mark.asyncio

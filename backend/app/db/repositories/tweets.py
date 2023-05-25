@@ -6,7 +6,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from app.db.models import Follower, Like, Tweet
-from app.models.tweets import TweetCreate, TweetInDB, TweetLike
+from app.schemas.tweets import TweetCreate, TweetInDB, TweetLike
 
 
 class TweetCRUD:

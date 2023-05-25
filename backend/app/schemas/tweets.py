@@ -1,7 +1,7 @@
 from typing import List
 
-from app.models.core import CoreModel, IDModelMixin
-from app.models.users import UserDetail
+from app.schemas.core import CoreModel, IDModelMixin
+from app.schemas.users import UserDetail
 
 
 class TweetBase(CoreModel):

@@ -1,4 +1,4 @@
-from app.models.core import BaseResponse
+from app.schemas.core import BaseResponse
 
 
 class ErrorResponse(BaseResponse):
