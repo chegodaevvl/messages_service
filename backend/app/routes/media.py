@@ -6,9 +6,9 @@ from fastapi import APIRouter, Depends, UploadFile, status
 from app.core.settings import settings
 from app.db.dependencies import get_media_crud
 from app.db.repositories.media import MediaCRUD
-from app.models.error import ErrorResponse
-from app.models.media import MediaCreate
-from app.models.response import MediaResponse
+from app.schemas.error import ErrorResponse
+from app.schemas.media import MediaCreate
+from app.schemas.response import MediaResponse
 from app.utils.error import create_error_response
 
 router = APIRouter()

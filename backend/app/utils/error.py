@@ -1,4 +1,4 @@
-from app.models.error import ErrorResponse
+from app.schemas.error import ErrorResponse
 
 errors = {
     101: {"error_type": "Not Found", "error_message": "No user found with such id!"},

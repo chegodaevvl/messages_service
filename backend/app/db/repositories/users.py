@@ -6,7 +6,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 
 from app.db.models import Follower, User
-from app.models.users import FollowerInfo, UserCreate, UserDetail, UserInDB
+from app.schemas.users import FollowerInfo, UserCreate, UserDetail, UserInDB
 
 
 class UserCRUD:

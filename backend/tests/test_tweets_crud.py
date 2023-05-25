@@ -7,7 +7,7 @@ from httpx import AsyncClient
 
 from app.db.repositories.tweets import TweetCRUD
 from app.db.models import Tweet
-from app.models.tweets import TweetCreate, TweetLike
+from app.schemas.tweets import TweetCreate, TweetLike
 
 pytestmark = pytest.mark.asyncio
 

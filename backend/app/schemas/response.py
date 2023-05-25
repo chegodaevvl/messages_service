@@ -1,8 +1,8 @@
 from typing import List, Optional
 
-from app.models.core import BaseResponse
-from app.models.tweets import TweetPublic
-from app.models.users import UserPublic
+from app.schemas.core import BaseResponse
+from app.schemas.tweets import TweetPublic
+from app.schemas.users import UserPublic
 
 
 class UserResponse(BaseResponse):
