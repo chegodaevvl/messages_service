@@ -1,53 +1,42 @@
-API сервис для службы обмена короткими сообщениями
+# Short messages service API backend
 
-# Порядок развертывания сервиса
-1. Клонировать репозиторий.
-2. Файл _.envexample_ переименовать в файл _.env_
-3. Скопировать этот файл в папки _environment\test_ и _environment\prod_
-4. Отредактировать оба файла _.env_ подставив в него актуальные данные для конфигурирования тестового и 
-производственного окружений
-5. Запуск окружений:
-Запуск окружений реализован в среде Docker. Для запуска преднастроены два файла, запускающие создание и запуск докер-
-контейнеров: запуск **Тестово-презентационной среды** (файл docker-compose_test.yml) и запуск **Производственной среды** 
-(файл docker-compose.yml).
+## Introduction
+API backend is developed with FastAPI framework on Python 3.11.
 
-В составе каждого докер контейнера ести три сервиса: 
-* сервис БД (СУБД Postgre), запускается на порту 5432
-* API сервис, построенный на базе FastAPI фреймворка языка программирования Python. Запускается на порту 5000. Для 
-доступа к документации на API необходимо перейти в браузере по адресу:
-`http://localhost:5000/docs`
-* Сервиса хостинга статических файлов nginx. Запущен на порту 80. Для работы с UI приложения необходимо перейти в 
-браузере по адресу:
-`http://localhost`
+Postgresql is used to store data. Alembic is used to create and support database structure. SqlAlchemy 2.0 is used to provide CRUD operations for data stored in database.
 
-Для развертывания тестово-презентационного окружения необходимо открыть терминал и выполнить команду:
+Source code is covered by unit tests, which are developed using pytest.
 
-`docker compose -p tweets_test -f docker-compose_test.yml up -d --build`
+Docker and Docker Compose are used for the API backend deployment. 
 
-После выполнения этой команды будет создан и запущен докер контейнер с имененм tweet-test.
+## Deployment
 
-Его основное отличие от производственного окружения состоит в том, что наряду с основной рабочей частью приложения, в 
-образе есть инструментарий для запуска автоматических тестов (модуль pytest).
+### 1. Common information
+There are 2 different deployment environments inside this repo configured with docker compose.
 
-Для наполнения базы данных презентационными данными нужно в терминале выполнить команду
+Each environment contains 3 separate servces:
+* DB Service is launched on the standard postgresql port 5432. Standard postgresql image is used.
+* API service is launched on the port 5000. API documentation can be accessible by address `http://localhost:5000/docs`.
+* Nginx service is launched on the port 80 and used to process static files (VueJS web application). Web application can be accessible by address `http://localhost`.
 
-`python fixtures.py`
+#### 1. Presentation environment (file _docker-compose_test.yml_)
+This environment contains tools to test and launch API backend and also check source code with linters.
 
-При выполнении этой команды будет создано несколько объектов (пользователей, твитов и связей между ними) для 
-демонстрации работы приложения.
+Also this environment can be used to present API service with some test data:
+1. Open running container
+2. Open terminal for the API service docker container
+3. Run command `python fixtures.py` to generate test data in the database.
 
-Для развертывания основного окружения необходимо открыть терминал и выполнить команду:
+#### 2. Production environment (file _docker-compose.yml_)
+This environment contains tools and file to launch app only.
 
-`docker compose -p tweets_main -f docker-compose.yml up -d --build`
-
-# Информация о сервисе
-Сервис разработан в фреймворке FastAPI на языке программирования Python.
-
-Для хранения данных используется СУБД PostgreSQL. 
-
-Для работы со структурой БД используется библиотека Alembic. Развертывание структуры БД производится в 
-автоматическом режиме при создании докер контейнера.
-
-Для работы с БД используется асинхронные инструменты ORM SQLAlchemy 2.0.
-
-Для обеспечения качества работы сервиса были разработаны автотесты с использованием библиотеки pytest.
+### 2. How to deploy an API backend
+1. Clone this repo.
+2. Rename _.envexample_ file to _.env_.
+3. Copy _.env_ file to _environment\test_ и _environment\prod_ folders.
+4. Edit both file with actual data to configure presentation and production environment
+5. Launch docker compose command:
+   5.1. **Presentation environment**
+   `docker compose -p tweets_test -f docker-compose_test.yml up -d --build`
+   5.2 **Production environment**
+   `docker compose -p tweets -f docker-compose.yml up -d --build`
