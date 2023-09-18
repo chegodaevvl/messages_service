@@ -36,7 +36,9 @@ This environment contains tools and file to launch app only.
 3. Copy _.env_ file to _environment\test_ и _environment\prod_ folders.
 4. Edit both file with actual data to configure presentation and production environment
 5. Launch docker compose command:
+   
    5.1. **Presentation environment**
    `docker compose -p tweets_test -f docker-compose_test.yml up -d --build`
+   
    5.2 **Production environment**
    `docker compose -p tweets -f docker-compose.yml up -d --build`
